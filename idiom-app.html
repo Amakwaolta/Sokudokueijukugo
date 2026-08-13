@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>速読英熟語 熟語帳 — 原稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f2f4ee;
+    --paper-line:#d8ded2;
+    --ink:#1f2b24;
+    --ink-soft:#5b6b5e;
+    --indigo:#2e4374;
+    --indigo-deep:#1c2c50;
+    --shu:#bf3a2c;
+    --shu-soft:#e4a79c;
+    --gold:#b8923f;
+    --card:#fbfaf5;
+    --shadow: 0 8px 24px rgba(31,43,36,0.12), 0 2px 6px rgba(31,43,36,0.08);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px) 0 0/28px 28px,
+      var(--paper);
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px; margin:0 auto; padding:20px 16px 64px;}
+  .brand{
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding:6px 2px 18px;
+    border-bottom:2px solid var(--ink);
+    margin-bottom:20px;
+  }
+  .brand h1{
+    font-family:'Shippori Mincho', serif; font-weight:800;
+    font-size:26px; letter-spacing:.06em; margin:0; color:var(--indigo-deep);
+  }
+  .brand .sub{font-size:11px; color:var(--ink-soft); letter-spacing:.12em;}
+  .navbtn{
+    background:none;border:none;color:var(--ink-soft);font-family:'Zen Kaku Gothic New';
+    font-size:13px;cursor:pointer;padding:6px 10px;border-radius:8px;letter-spacing:.05em;
+  }
+  .navbtn.active{background:var(--indigo-deep);color:#fff;}
+  .navrow{display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap;}
+
+  /* Dashboard */
+  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
+  .stat-card{
+    background:var(--card); border:1px solid var(--paper-line); border-radius:var(--radius);
+    padding:14px 16px; box-shadow:var(--shadow); position:relative; overflow:hidden;
+  }
+  .stat-card .num{
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:28px; color:var(--indigo-deep);
+    line-height:1;
+  }
+  .stat-card .label{font-size:12px; color:var(--ink-soft); margin-top:6px; letter-spacing:.04em;}
+  .stat-card.streak .num{color:var(--shu);}
+
+  .section-title{
+    font-family:'Shippori Mincho', serif; font-weight:700; font-size:15px; color:var(--ink);
+    margin:24px 0 10px; display:flex; align-items:center; gap:8px;
+  }
+  .section-title::before{content:""; width:16px; height:2px; background:var(--shu); display:inline-block;}
+
+  .mode-card{
+    background:var(--card); border:1px solid var(--paper-line); border-radius:var(--radius);
+    padding:16px; margin-bottom:12px; box-shadow:var(--shadow);
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .mode-card .m-title{font-weight:700; font-size:15px;}
+  .mode-card .m-desc{font-size:12px; color:var(--ink-soft); margin-top:3px; line-height:1.5;}
+  .btn{
+    font-family:'Zen Kaku Gothic New'; font-weight:700; border:none; cursor:pointer;
+    border-radius:10px; padding:10px 18px; font-size:14px; letter-spacing:.03em;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--indigo-deep); color:#fff;}
+  .btn-primary:hover{background:var(--indigo);}
+  .btn-outline{background:transparent; border:1.5px solid var(--indigo-deep); color:var(--indigo-deep);}
+  .btn-ghost{background:transparent; color:var(--ink-soft); font-weight:500; text-decoration:underline;}
+  .btn-shu{background:var(--shu); color:#fff;}
+
+  .range-input{width:78px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:15px; padding:9px 6px;}
+  .range-check{display:flex; align-items:center; gap:7px; font-size:13px; color:var(--ink-soft); cursor:pointer;}
+  .range-check input{width:15px; height:15px; accent-color:var(--indigo-deep);}
+  select, input[type=text]{
+    font-family:'Zen Kaku Gothic New'; font-size:14px; padding:8px 10px; border-radius:8px;
+    border:1.5px solid var(--paper-line); background:#fff; color:var(--ink);
+  }
+
+  .settings-row{
+    display:flex; align-items:center; justify-content:space-between; padding:10px 0;
+    border-bottom:1px solid var(--paper-line); font-size:14px;
+  }
+
+  /* Session */
+  .progressbar{height:6px; background:var(--paper-line); border-radius:3px; overflow:hidden; margin-bottom:22px;}
+  .progressbar-fill{height:100%; background:var(--shu); transition:width .25s ease;}
+  .session-meta{display:flex; justify-content:space-between; font-size:12px; color:var(--ink-soft); margin-bottom:8px; font-family:'JetBrains Mono',monospace;}
+
+  .card-stage{display:flex; justify-content:center; padding:8px 0 24px;}
+  .flashcard{
+    width:100%; max-width:420px; min-height:320px; background:var(--card);
+    border-radius:18px; box-shadow:var(--shadow); border:1px solid var(--paper-line);
+    position:relative; padding:28px 24px; display:flex; flex-direction:column;
+    justify-content:center; align-items:center; text-align:center; cursor:pointer;
+    user-select:none;
+  }
+  .flashcard .boxtag{
+    position:absolute; top:14px; left:16px; font-family:'JetBrains Mono',monospace;
+    font-size:10px; color:var(--ink-soft); letter-spacing:.08em; border:1px solid var(--paper-line);
+    padding:2px 7px; border-radius:20px;
+  }
+  .flashcard .idtag{
+    position:absolute; top:14px; right:16px; font-family:'JetBrains Mono',monospace;
+    font-size:10px; color:var(--ink-soft);
+  }
+  .word-en{
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:34px; color:var(--indigo-deep);
+    word-break:break-word; margin-bottom:6px;
+  }
+  .word-hint{font-size:12px; color:var(--ink-soft); margin-bottom:18px;}
+  .meaning{
+    font-size:16px; line-height:1.75; color:var(--ink); white-space:pre-wrap; padding-top:10px;
+    border-top:1px dashed var(--paper-line); width:100%;
+  }
+  .tap-hint{font-size:12px; color:var(--ink-soft); margin-top:22px; letter-spacing:.05em;}
+
+  .stamp{
+    position:absolute; bottom:14px; right:16px; width:56px; height:56px; border-radius:50%;
+    border:2.5px solid var(--shu); color:var(--shu); display:flex; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:20px; transform:rotate(-8deg);
+    opacity:.9;
+  }
+
+  .grade-row{display:flex; gap:10px; justify-content:center; max-width:420px; margin:0 auto; width:100%;}
+  .grade-btn{
+    flex:1; padding:14px 6px; border-radius:12px; border:none; cursor:pointer; font-family:'Zen Kaku Gothic New';
+    font-weight:700; font-size:13px; color:#fff; display:flex; flex-direction:column; align-items:center; gap:3px;
+  }
+  .grade-btn .k{font-family:'JetBrains Mono',monospace; font-size:10px; opacity:.75;}
+  .grade-again{background:#8a8f86;}
+  .grade-good{background:var(--indigo-deep);}
+  .grade-easy{background:var(--shu);}
+
+  /* Quiz mode */
+  .quiz-choices{display:flex; flex-direction:column; gap:10px; max-width:420px; margin:0 auto; width:100%;}
+  .choice-btn{
+    text-align:left; padding:14px 16px; border-radius:12px; border:1.5px solid var(--paper-line);
+    background:var(--card); font-size:14px; line-height:1.5; cursor:pointer; font-family:'Zen Kaku Gothic New';
+    color:var(--ink);
+  }
+  .choice-btn.correct{border-color:var(--indigo-deep); background:#eef1fb;}
+  .choice-btn.wrong{border-color:var(--shu); background:#fbeceb;}
+  .choice-btn:disabled{cursor:default;}
+
+  /* Session end */
+  .end-wrap{text-align:center; padding:40px 0;}
+  .end-stamp{
+    width:120px; height:120px; border-radius:50%; border:4px solid var(--shu); color:var(--shu);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 22px; transform:rotate(-6deg);
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:28px; letter-spacing:.05em;
+  }
+  .end-title{font-family:'Shippori Mincho',serif; font-weight:700; font-size:20px; margin-bottom:6px;}
+  .end-sub{color:var(--ink-soft); font-size:13px; margin-bottom:26px;}
+  .end-stats{display:flex; justify-content:center; gap:28px; margin-bottom:30px;}
+  .end-stats div .num{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; color:var(--indigo-deep);}
+  .end-stats div .lb{font-size:11px; color:var(--ink-soft);}
+
+  /* List view */
+  .search-bar{display:flex; gap:8px; margin-bottom:14px;}
+  .search-bar input{flex:1;}
+  .word-row{
+    display:flex; justify-content:space-between; align-items:center; padding:10px 12px;
+    background:var(--card); border:1px solid var(--paper-line); border-radius:10px; margin-bottom:6px;
+  }
+  .word-row .w{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:14px; color:var(--indigo-deep); min-width:110px;}
+  .word-row .mn{font-size:12px; color:var(--ink-soft); flex:1; margin:0 10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .boxbadge{font-family:'JetBrains Mono',monospace; font-size:10px; padding:3px 8px; border-radius:20px; white-space:nowrap;}
+  .bb0{background:#eee; color:#888;}
+  .bb1{background:#e8ecf6; color:var(--indigo);}
+  .bb2{background:#fdf0e6; color:var(--gold);}
+  .bb3{background:#fbeceb; color:var(--shu);}
+  .accbadge{
+    font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ink-soft);
+    white-space:nowrap; margin-left:6px;
+  }
+
+  .empty-note{color:var(--ink-soft); font-size:13px; text-align:center; padding:30px 10px;}
+
+  /* Word book (TOC + pages) */
+  .toc-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .toc-item{
+    background:var(--card); border:1px solid var(--paper-line); border-radius:12px;
+    padding:14px 14px; box-shadow:var(--shadow); cursor:pointer;
+  }
+  .toc-item:active{transform:scale(.97);}
+  .toc-range{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--indigo-deep); font-size:15px;}
+  .toc-sub{font-size:11px; color:var(--ink-soft); margin-top:4px;}
+
+  .book-crumb{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-size:12px; color:var(--ink-soft); font-family:'JetBrains Mono',monospace;}
+  .book-crumb a{color:var(--indigo-deep); text-decoration:underline; font-family:'Zen Kaku Gothic New'; font-size:13px;}
+
+  .book-list{display:flex; flex-direction:column; gap:10px; margin-bottom:20px;}
+  .book-entry{
+    background:var(--card); border:1px solid var(--paper-line); border-radius:12px;
+    padding:14px 16px; box-shadow:var(--shadow); position:relative;
+  }
+  .book-entry-done{border-color:var(--shu-soft); background:#fdfaf6;}
+  .book-stamp{
+    position:absolute; top:10px; right:12px; width:34px; height:34px; border-radius:50%;
+    border:2px solid var(--shu); color:var(--shu); display:flex; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho',serif; font-weight:800; font-size:13px; transform:rotate(-10deg); opacity:.9;
+  }
+  .book-head{display:flex; align-items:baseline; gap:10px; margin-bottom:6px;}
+  .book-id{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft);}
+  .book-word{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:20px; color:var(--indigo-deep);}
+  .book-meaning{font-size:14px; line-height:1.6; color:var(--ink);}
+  .book-acc{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); margin-top:4px;}
+  .book-example{margin-top:10px; padding-top:10px; border-top:1px dashed var(--paper-line);}
+  .book-ex-en{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink); line-height:1.6;}
+  .book-ex-ja{font-size:12.5px; color:var(--ink-soft); margin-top:4px; line-height:1.6;}
+  .book-ex-pending{margin-top:10px; padding-top:10px; border-top:1px dashed var(--paper-line); font-size:11.5px; color:var(--ink-soft);}
+  .book-nav{display:flex; justify-content:space-between; gap:10px; margin-bottom:30px;}
+  .book-nav .btn:disabled{opacity:.35; cursor:default;}
+
+  /* Modal */
+  .modal-bg{position:fixed; inset:0; background:rgba(20,26,20,.45); display:flex; align-items:center; justify-content:center; padding:20px; z-index:50;}
+  .modal{background:var(--card); border-radius:16px; padding:22px; max-width:340px; width:100%; box-shadow:var(--shadow);}
+  .modal h3{font-family:'Shippori Mincho',serif; margin:0 0 10px;}
+  .modal p{font-size:13px; color:var(--ink-soft); line-height:1.6; margin-bottom:18px;}
+  .modal .row{display:flex; gap:10px; justify-content:flex-end;}
+
+  @media (max-width:420px){
+    .word-en{font-size:28px;}
+    .flashcard{min-height:290px; padding:22px 18px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ============ DATA ============ */
+const WORDS = [{"id":1,"word":"be late for ～","meaning":"～に遅れる","lesson":"2","ex":"He was late for the meeting again.","exJa":"彼はまた会議に遅刻した。"},{"id":2,"word":"once in a while","meaning":"時々","lesson":"2","ex":"We go hiking once in a while.","exJa":"私たちは時々ハイキングに行く。"},{"id":3,"word":"lose oneself in ～","meaning":"～に没頭する、～に夢中になる","lesson":"2","ex":"She lost herself in the novel.","exJa":"彼女はその小説に夢中になった。"},{"id":4,"word":"be incapable of ...ing","meaning":"...することができない","lesson":"2","ex":"He is incapable of telling a lie.","exJa":"彼は嘘をつくことができない。"},{"id":5,"word":"at one's wit's end","meaning":"途方に暮れて、ほとほと困っている","lesson":"2","ex":"I was at my wit's end trying to fix the computer.","exJa":"パソコンを直そうとして途方に暮れた。"},{"id":6,"word":"be cut out for 〔to be〕 ～","meaning":"～に向いている、～に適している","lesson":"2","ex":"She is cut out for teaching.","exJa":"彼女は教えることに向いている。"},{"id":7,"word":"make a contribution to ～","meaning":"～に貢献〔寄与〕する","lesson":"2","ex":"His research made a great contribution to medicine.","exJa":"彼の研究は医学に大きく貢献した。"},{"id":8,"word":"turn to ～","meaning":"～に頼る、～の方へ向く","lesson":"2","ex":"She turned to her friend for advice.","exJa":"彼女は助言を求めて友人に頼った。"},{"id":9,"word":"be suitable for ～","meaning":"～に適した","lesson":"2","ex":"This movie is not suitable for children.","exJa":"この映画は子供には適していない。"},{"id":10,"word":"in the course of ～","meaning":"～の間に、～の過程で","lesson":"2","ex":"Many things changed in the course of the war.","exJa":"戦争の過程で多くのことが変わった。"},{"id":11,"word":"get ready for ～","meaning":"～の準備をする","lesson":"3","ex":"We need to get ready for the trip.","exJa":"私たちは旅行の準備をする必要がある。"},{"id":12,"word":"on the go","meaning":"（常に忙しく）活動中で","lesson":"3","ex":"She is always on the go with work.","exJa":"彼女は仕事でいつも忙しく動き回っている。"},{"id":13,"word":"in progress","meaning":"進行中で","lesson":"3","ex":"The construction is still in progress.","exJa":"その工事はまだ進行中だ。"},{"id":14,"word":"get in contact with ～","meaning":"～に連絡を取る、～と接触する","lesson":"3","ex":"Please get in contact with our office.","exJa":"私たちの事務所に連絡を取ってください。"},{"id":15,"word":"lose sight of ～","meaning":"～を見失う、～を見落とす","lesson":"3","ex":"Don't lose sight of your goal.","exJa":"目標を見失わないでください。"},{"id":16,"word":"in no time","meaning":"すぐに、まもなく","lesson":"3","ex":"The train arrived in no time.","exJa":"電車はすぐに到着した。"},{"id":17,"word":"as is often the case (with ～)","meaning":"（～に）よくあることだが","lesson":"3","ex":"As is often the case with him, he was late.","exJa":"彼にはよくあることだが、遅刻した。"},{"id":18,"word":"act on 〔upon〕 ～","meaning":"～に基づいて行動する、～に作用する","lesson":"3","ex":"The police acted on the tip immediately.","exJa":"警察はその情報に基づいてすぐに行動した。"},{"id":19,"word":"pick out ～","meaning":"～を選ぶ","lesson":"3","ex":"She picked out a nice dress for the party.","exJa":"彼女はパーティー用に素敵なドレスを選んだ。"},{"id":20,"word":"be similar to ～","meaning":"～と似ている","lesson":"3","ex":"This song is similar to one I heard before.","exJa":"この曲は以前聞いたものと似ている。"},{"id":21,"word":"single out ～","meaning":"～を特に選び出す","lesson":"3","ex":"The teacher singled him out for praise.","exJa":"先生は彼を特に選んで褒めた。"},{"id":22,"word":"have ～ in common (with ...)","meaning":"（...と）共通の～を持つ","lesson":"4","ex":"We have a lot in common with each other.","exJa":"私たちはお互いに共通点が多い。"},{"id":23,"word":"be afraid to do","meaning":"怖くて...できない","lesson":"4","ex":"He was afraid to speak in public.","exJa":"彼は人前で話すのが怖かった。"},{"id":24,"word":"see A as B","meaning":"AをBとみなす〔考える〕","lesson":"4","ex":"I see this problem as a chance to grow.","exJa":"私はこの問題を成長の機会だと考えている。"},{"id":25,"word":"at first glance","meaning":"一見したところ、一目見ただけで","lesson":"4","ex":"At first glance, the task looked easy.","exJa":"一見したところ、その作業は簡単に見えた。"},{"id":26,"word":"be anxious to do","meaning":"...することを切望する","lesson":"4","ex":"She was anxious to meet her old friend.","exJa":"彼女は旧友に会うことを切望していた。"},{"id":27,"word":"make haste","meaning":"慌てる、急ぐ","lesson":"4","ex":"We must make haste or we'll miss the train.","exJa":"急がないと電車に乗り遅れる。"},{"id":28,"word":"at (one's) ease","meaning":"気楽に、安心して","lesson":"4","ex":"The host tried to put the guests at ease.","exJa":"主人は客たちをくつろがせようとした。"},{"id":29,"word":"not possibly","meaning":"どうしても...ない","lesson":"4","ex":"I cannot possibly finish this by tomorrow.","exJa":"明日までにこれを終わらせることはどうしてもできない。"},{"id":30,"word":"would rather ～ than ...","meaning":"...するよりむしろ～したい","lesson":"4","ex":"I would rather walk than take the bus.","exJa":"バスに乗るよりむしろ歩きたい。"},{"id":31,"word":"the chances are that ...","meaning":"おそらく...だろう","lesson":"5","ex":"The chances are that it will rain tomorrow.","exJa":"明日はおそらく雨だろう。"},{"id":32,"word":"(just) around corner","meaning":"間近に来て","lesson":"5","ex":"Summer vacation is just around the corner.","exJa":"夏休みはもうすぐそこだ。"},{"id":33,"word":"come into effect","meaning":"発効する〔実施される〕","lesson":"5","ex":"The new law will come into effect next month.","exJa":"新しい法律は来月発効する。"},{"id":34,"word":"become of ～","meaning":"～はどうなるのだろうか","lesson":"5","ex":"What will become of the old building?","exJa":"あの古い建物はどうなるのだろうか。"},{"id":35,"word":"at present","meaning":"現在は","lesson":"5","ex":"At present, she is living in Osaka.","exJa":"現在、彼女は大阪に住んでいる。"},{"id":36,"word":"go a long way to ～","meaning":"～に大いに役立つ、効果がある","lesson":"5","ex":"A little kindness goes a long way to make someone happy.","exJa":"ちょっとした親切は人を幸せにするのに大いに役立つ。"},{"id":37,"word":"participate in ～","meaning":"～に参加する","lesson":"5","ex":"Many students participated in the event.","exJa":"多くの学生がそのイベントに参加した。"},{"id":38,"word":"such as ～","meaning":"たとえば～（のような）","lesson":"5","ex":"I like fruits such as apples and oranges.","exJa":"私はリンゴやオレンジのような果物が好きだ。"},{"id":39,"word":"brush up (on) ～","meaning":"～をやり直す","lesson":"5","ex":"I want to brush up on my English before the trip.","exJa":"旅行前に英語をやり直したい。"},{"id":40,"word":"be content with ～","meaning":"～に満足している","lesson":"6","ex":"He is content with his simple life.","exJa":"彼は自分のシンプルな生活に満足している。"},{"id":41,"word":"all of a sudden","meaning":"突然","lesson":"6","ex":"All of a sudden, the lights went out.","exJa":"突然、明かりが消えた。"},{"id":42,"word":"at home","meaning":"家で、本国で","lesson":"6","ex":"She felt at home in the new city.","exJa":"彼女はその新しい街で居心地よく感じた。"},{"id":43,"word":"go by","meaning":"経過する、通り過ぎる","lesson":"6","ex":"Ten years have gone by since we met.","exJa":"出会ってから10年が経った。"},{"id":44,"word":"be of no use","meaning":"まったく役に立たない","lesson":"6","ex":"This old map is of no use now.","exJa":"この古い地図はもう役に立たない。"},{"id":45,"word":"by all means","meaning":"何としても、ぜひとも","lesson":"6","ex":"By all means, come and visit us.","exJa":"ぜひ私たちを訪ねてきてください。"},{"id":46,"word":"keep ～ in mind","meaning":"～のことを心に留めておく","lesson":"6","ex":"Please keep this rule in mind.","exJa":"このルールを心に留めておいてください。"},{"id":47,"word":"～, when ...","meaning":"～そしてその時...","lesson":"6","ex":"She was about to leave, when the phone rang.","exJa":"彼女が出かけようとした時、電話が鳴った。"},{"id":48,"word":"it is ～ that ...","meaning":"...することは～である","lesson":"6","ex":"It is important that we arrive on time.","exJa":"時間通りに到着することが重要だ。"},{"id":49,"word":"go on (with ～)","meaning":"～を続ける、続く","lesson":"6","ex":"Please go on with your story.","exJa":"話を続けてください。"},{"id":50,"word":"add A to B","meaning":"AをBに加える","lesson":"6","ex":"Add sugar to the coffee.","exJa":"コーヒーに砂糖を加えて。"},{"id":51,"word":"hear of ～","meaning":"～のうわさを聞く","lesson":"6","ex":"I have never heard of that word.","exJa":"その単語を聞いたことがない。"},{"id":52,"word":"once upon a time","meaning":"昔々","lesson":"7","ex":"Once upon a time, there lived a king.","exJa":"昔々、ある王様が住んでいました。"},{"id":53,"word":"keep an eye on ～","meaning":"～から目を離さない、～を見張る","lesson":"7","ex":"Could you keep an eye on my bag?","exJa":"私のかばんを見ていてもらえますか。"},{"id":54,"word":"go off","meaning":"去る、爆発する、消える","lesson":"7","ex":"The alarm went off at six.","exJa":"アラームが6時に鳴った。"},{"id":55,"word":"present A with B","meaning":"AにBを見せる、贈る","lesson":"7","ex":"They presented her with a bouquet of flowers.","exJa":"彼らは彼女に花束を贈った。"},{"id":56,"word":"next to ～","meaning":"～に次いで、ほとんど","lesson":"7","ex":"The bank is next to the station.","exJa":"銀行は駅の隣にある。"},{"id":57,"word":"point out that ...","meaning":"...だと指摘する","lesson":"7","ex":"He pointed out that the plan had a flaw.","exJa":"彼はその計画に欠陥があると指摘した。"},{"id":58,"word":"account for ～","meaning":"～を占める、～を説明する","lesson":"7","ex":"Tourism accounts for a large part of the economy.","exJa":"観光業は経済の大部分を占める。"},{"id":59,"word":"pay (A) for B","meaning":"Bの代金を支払う","lesson":"7","ex":"I paid ten dollars for the book.","exJa":"私はその本に10ドル払った。"},{"id":60,"word":"if S were to do","meaning":"もし...することがあれば","lesson":"7","ex":"If it were to rain tomorrow, we would cancel the picnic.","exJa":"もし明日雨が降ったら、ピクニックは中止だ。"},{"id":61,"word":"were it not for ～","meaning":"もし～がなければ","lesson":"8","ex":"Were it not for your help, I would have failed.","exJa":"あなたの助けがなければ、私は失敗していただろう。"},{"id":62,"word":"to one's＋感情名詞","meaning":"...したことには","lesson":"8","ex":"To my surprise, she passed the exam.","exJa":"驚いたことに、彼女は試験に合格した。"},{"id":63,"word":"be S ～ (or ...)","meaning":"Sが～であろうと","lesson":"8","ex":"Be it big or small, every gift makes her happy.","exJa":"大きかろうと小さかろうと、どんな贈り物も彼女を喜ばせる。"},{"id":64,"word":"not always","meaning":"必ずしも...（とは限ら）ない","lesson":"8","ex":"Expensive things are not always good.","exJa":"高価なものが必ずしも良いとは限らない。"},{"id":65,"word":"～, so that ...","meaning":"～それで...、その結果...","lesson":"8","ex":"He studied hard, so that he passed the test.","exJa":"彼は一生懸命勉強し、その結果テストに合格した。"},{"id":66,"word":"whatever (may) ...","meaning":"たとえ何が...しようと","lesson":"8","ex":"Whatever may happen, I will support you.","exJa":"何が起ころうとも、私はあなたを支える。"},{"id":67,"word":"what is called ～","meaning":"いわゆる～","lesson":"8","ex":"He is what is called a genius.","exJa":"彼はいわゆる天才だ。"},{"id":68,"word":"in detail","meaning":"詳細に、詳しく","lesson":"8","ex":"Please explain the plan in detail.","exJa":"その計画を詳しく説明してください。"},{"id":69,"word":"spend A on B","meaning":"A（金・時間）をBに費やす","lesson":"8","ex":"She spends a lot of money on books.","exJa":"彼女は本にたくさんお金を使う。"},{"id":70,"word":"give ～ a ride","meaning":"～を車に乗せてあげる","lesson":"8","ex":"Can you give me a ride to the station?","exJa":"駅まで車に乗せてくれますか。"},{"id":71,"word":"in a hurry","meaning":"急いで、慌てて","lesson":"9","ex":"He left the house in a hurry.","exJa":"彼は急いで家を出た。"},{"id":72,"word":"watch out (for ～)","meaning":"（～に）気をつける","lesson":"9","ex":"Watch out for cars when you cross the street.","exJa":"道を渡るときは車に気をつけて。"},{"id":73,"word":"under construction","meaning":"工事〔建設〕中の","lesson":"9","ex":"The new bridge is still under construction.","exJa":"新しい橋はまだ建設中だ。"},{"id":74,"word":"make a mistake","meaning":"間違える、失敗する","lesson":"9","ex":"Everyone makes a mistake sometimes.","exJa":"誰でも時には間違いを犯す。"},{"id":75,"word":"have an eye for ～","meaning":"～に対する鑑識眼がある","lesson":"9","ex":"She has an eye for good design.","exJa":"彼女は良いデザインを見る目がある。"},{"id":76,"word":"a piece of ～","meaning":"1つ、１点","lesson":"9","ex":"Can I have a piece of cake?","exJa":"ケーキを一切れもらえますか。"},{"id":77,"word":"make a living","meaning":"収入を得る、生計を立てる","lesson":"9","ex":"He makes a living as a writer.","exJa":"彼は作家として生計を立てている。"},{"id":78,"word":"second to none","meaning":"右に出るものはいない","lesson":"9","ex":"Her cooking skill is second to none.","exJa":"彼女の料理の腕前は誰にも劣らない。"},{"id":79,"word":"take the trouble to do","meaning":"わざわざ...する","lesson":"9","ex":"She took the trouble to explain it again.","exJa":"彼女はわざわざもう一度説明してくれた。"},{"id":80,"word":"out of date","meaning":"時代〔流行〕遅れの","lesson":"10","ex":"This textbook is out of date now.","exJa":"この教科書は今では時代遅れだ。"},{"id":81,"word":"for the present","meaning":"差し当たり、とりあえず今は","lesson":"10","ex":"Let's stop here for the present.","exJa":"差し当たり、今はここでやめておこう。"},{"id":82,"word":"too ～ to do","meaning":"...するには～すぎる","lesson":"10","ex":"The coffee was too hot to drink.","exJa":"コーヒーは熱すぎて飲めなかった。"},{"id":83,"word":"a host of ～","meaning":"たくさんの～、多数の～","lesson":"10","ex":"A host of problems arose after the change.","exJa":"その変更の後、多くの問題が生じた。"},{"id":84,"word":"hand down ～","meaning":"～を後世に残す","lesson":"10","ex":"The tradition has been handed down for generations.","exJa":"その伝統は代々受け継がれてきた。"},{"id":85,"word":"for a while","meaning":"しばらくの間","lesson":"10","ex":"Let's rest here for a while.","exJa":"しばらくここで休みましょう。"},{"id":86,"word":"hang on (to ～)","meaning":"～を手放さない、しがみつく","lesson":"10","ex":"Hang on to the rail while climbing the stairs.","exJa":"階段を上るときは手すりにつかまって。"},{"id":87,"word":"in particular","meaning":"特に","lesson":"10","ex":"I like fruits, apples in particular.","exJa":"私は果物、特にリンゴが好きだ。"},{"id":88,"word":"put ～ to use","meaning":"～を利用〔使用〕する","lesson":"10","ex":"He put his skills to use at the new job.","exJa":"彼は新しい仕事で自分の技能を活かした。"},{"id":89,"word":"take up ～","meaning":"～を占める、～を始める","lesson":"10","ex":"She decided to take up painting.","exJa":"彼女は絵を始めることにした。"},{"id":90,"word":"put out ～","meaning":"～を出版する、～を消す","lesson":"11","ex":"Firefighters put out the fire quickly.","exJa":"消防士たちは素早く火を消した。"},{"id":91,"word":"adapt A to B","meaning":"AをBに適応させる","lesson":"11","ex":"We need to adapt our plan to the new situation.","exJa":"私たちは計画を新しい状況に適応させる必要がある。"},{"id":92,"word":"take a chance","meaning":"思い切ってやってみる","lesson":"11","ex":"He decided to take a chance and apply for the job.","exJa":"彼は思い切ってその仕事に応募することにした。"},{"id":93,"word":"many a ～","meaning":"多くの～","lesson":"11","ex":"Many a student has failed this exam.","exJa":"多くの学生がこの試験に落ちてきた。"},{"id":94,"word":"it appears that ...","meaning":"...のように見〔思〕える","lesson":"11","ex":"It appears that he has already left.","exJa":"彼はすでに出発したように見える。"},{"id":95,"word":"A as well as B","meaning":"BだけでなくAも","lesson":"11","ex":"She can speak French as well as English.","exJa":"彼女は英語だけでなくフランス語も話せる。"},{"id":96,"word":"it costs S ～ to do","meaning":"...するのに（金額が）かかる","lesson":"11","ex":"It costs a lot of money to build a house.","exJa":"家を建てるにはたくさんのお金がかかる。"},{"id":97,"word":"be in the habit of ...ing","meaning":"...する習慣になっている","lesson":"11","ex":"He is in the habit of checking his phone every hour.","exJa":"彼は毎時間スマホを確認する習慣がある。"},{"id":98,"word":"both A and B","meaning":"AもBも","lesson":"12","ex":"Both my sister and I enjoy cooking.","exJa":"姉も私も料理を楽しむ。"},{"id":99,"word":"at will","meaning":"意のままに","lesson":"12","ex":"He can change the settings at will.","exJa":"彼は自由に設定を変更できる。"},{"id":100,"word":"of one's own accord","meaning":"自発的に、自らの自由意思で","lesson":"12","ex":"She left the company of her own accord.","exJa":"彼女は自らの意思でその会社を辞めた。"},{"id":101,"word":"be bored with 〔of〕 ～","meaning":"～に退屈している、～にうんざりしている","lesson":"1","ex":"","exJa":""},{"id":102,"word":"see (to it) that ...","meaning":"...するよう取り計らう〔気をつける〕","lesson":"1","ex":"","exJa":""},{"id":103,"word":"to the fullest 〔full〕","meaning":"十分に、思う存分","lesson":"1","ex":"","exJa":""},{"id":104,"word":"with all ～","meaning":"～ばかりなので、～にもかかわらず","lesson":"1","ex":"","exJa":""},{"id":105,"word":"break out","meaning":"（戦争・災害などが）突然起こる","lesson":"1","ex":"","exJa":""},{"id":106,"word":"be true of ～","meaning":"～に当てはまる","lesson":"1","ex":"","exJa":""},{"id":107,"word":"be liable to do","meaning":"...しやすい傾向にある、...する義務がある","lesson":"2","ex":"","exJa":""},{"id":108,"word":"be of interest","meaning":"興味深い","lesson":"2","ex":"","exJa":""},{"id":109,"word":"remember to do","meaning":"忘れずに...する、...することを覚えておく","lesson":"2","ex":"","exJa":""},{"id":110,"word":"not only A but (also) B","meaning":"AだけでなくBも...","lesson":"2","ex":"","exJa":""},{"id":111,"word":"to tell (you) the truth","meaning":"実を言うと","lesson":"2","ex":"","exJa":""},{"id":112,"word":"cannot (help) but do","meaning":"...しないわけにはいかない、どうしても...してしまう","lesson":"2","ex":"","exJa":""},{"id":113,"word":"no matter how (S) may ...","meaning":"どんなに...であろうと","lesson":"2","ex":"","exJa":""},{"id":114,"word":"be absorbed in ～","meaning":"～に没頭する、～に夢中になる","lesson":"2","ex":"","exJa":""},{"id":115,"word":"get tired from 〔with〕 ～","meaning":"～で疲れている","lesson":"2,3","ex":"","exJa":""},{"id":116,"word":"put in ～","meaning":"～（時間など）を費やす","lesson":"3","ex":"","exJa":""},{"id":117,"word":"be compelled to do","meaning":"...せざるを得ない","lesson":"3","ex":"","exJa":""},{"id":118,"word":"go ahead","meaning":"（許可などを表して）どうぞ、進んで行う","lesson":"3","ex":"","exJa":""},{"id":119,"word":"concentrate (A) on B","meaning":"（Aを）Bに集中する","lesson":"3","ex":"","exJa":""},{"id":120,"word":"get on with ～","meaning":"～を続ける、～をどんどん進める","lesson":"3","ex":"","exJa":""},{"id":121,"word":"limit A to B","meaning":"AをBに制限する、AをB内にとどめる","lesson":"3","ex":"","exJa":""},{"id":122,"word":"wake (～) up","meaning":"～を起こす、目がさめる","lesson":"3","ex":"","exJa":""},{"id":123,"word":"cure A of B","meaning":"AのB（病気・悪癖など）をなおす","lesson":"3","ex":"","exJa":""},{"id":124,"word":"lead to ～","meaning":"～を引き起こす","lesson":"3","ex":"","exJa":""},{"id":125,"word":"go wrong (with ～)","meaning":"（～が）うまくいかない","lesson":"4","ex":"","exJa":""},{"id":126,"word":"that is (to say)","meaning":"つまり、言い換えれば","lesson":"4","ex":"","exJa":""},{"id":127,"word":"S wish ...","meaning":"...であれば〔あったら〕よいのに","lesson":"4","ex":"","exJa":""},{"id":128,"word":"X times as ～ as ...","meaning":"...のX倍～","lesson":"4","ex":"","exJa":""},{"id":129,"word":"the比較級 ～, the比較級...","meaning":"～すればするほどますます...","lesson":"4","ex":"","exJa":""},{"id":130,"word":"be supposed to do","meaning":"...することになっている","lesson":"4","ex":"","exJa":""},{"id":131,"word":"make the best of ～","meaning":"～（不利な条件）を最大限に活かす","lesson":"4","ex":"","exJa":""},{"id":132,"word":"try on ～","meaning":"～を試着する","lesson":"4","ex":"","exJa":""},{"id":133,"word":"blow up (～)","meaning":"感情をぶつける、爆発する、～を爆破する","lesson":"5","ex":"","exJa":""},{"id":134,"word":"call off ～","meaning":"～を中止する、～（計画など）を取りやめる","lesson":"5","ex":"","exJa":""},{"id":135,"word":"on the air","meaning":"（テレビ・ラジオで）放送されて","lesson":"5","ex":"","exJa":""},{"id":136,"word":"on and on","meaning":"どんどん、引き続き","lesson":"5","ex":"","exJa":""},{"id":137,"word":"(at) first hand","meaning":"じかに、直接","lesson":"5","ex":"","exJa":""},{"id":138,"word":"drive at ～","meaning":"～を意図する、～を言おうとする","lesson":"5","ex":"","exJa":""},{"id":139,"word":"run for ～","meaning":"～に立候補する","lesson":"5","ex":"","exJa":""},{"id":140,"word":"only to do","meaning":"（その結果〔結局〕）...するだけだ","lesson":"5","ex":"","exJa":""},{"id":141,"word":"intended to have＋過去分詞","meaning":"...するつもりだったのに","lesson":"5,6","ex":"","exJa":""},{"id":142,"word":"to be honest (with you)","meaning":"正直に言えば、正直なところ","lesson":"6","ex":"","exJa":""},{"id":143,"word":"over ～","meaning":"～をめぐって、～を食べ〔飲み〕ながら","lesson":"6","ex":"","exJa":""},{"id":144,"word":"on earth","meaning":"（疑問詞を強調して）一体全体","lesson":"6","ex":"","exJa":""},{"id":145,"word":"neither A nor B","meaning":"AもBも...ない","lesson":"6","ex":"","exJa":""},{"id":146,"word":"lest S (should) ...","meaning":"...しないように","lesson":"6","ex":"","exJa":""},{"id":147,"word":"be accustomed to ～ 〔...ing〕","meaning":"～に〔...することに〕慣れている","lesson":"6","ex":"","exJa":""},{"id":148,"word":"be grateful (to A) for B","meaning":"Bについて（Aに）感謝している","lesson":"6","ex":"","exJa":""},{"id":149,"word":"contribute to ～","meaning":"～の一因となる、～に貢献する、～に寄付する","lesson":"6","ex":"","exJa":""},{"id":150,"word":"more often than not","meaning":"たいてい、しばしば","lesson":"7","ex":"","exJa":""},{"id":151,"word":"fall victim to ～","meaning":"～の犠牲になる","lesson":"7","ex":"","exJa":""},{"id":152,"word":"come down with ～","meaning":"～（風邪など）にかかる","lesson":"7","ex":"","exJa":""},{"id":153,"word":"be likely to do","meaning":"...しそうである","lesson":"7","ex":"","exJa":""},{"id":154,"word":"in the company of ～","meaning":"～と一緒に","lesson":"7","ex":"","exJa":""},{"id":155,"word":"A is exposed to B","meaning":"AがBにさらされている","lesson":"7","ex":"","exJa":""},{"id":156,"word":"be concerned about 〔for〕 ～","meaning":"～について懸念している","lesson":"7","ex":"","exJa":""},{"id":157,"word":"go out","meaning":"外出する、消える","lesson":"7","ex":"","exJa":""},{"id":158,"word":"go for a walk","meaning":"散歩に出かける","lesson":"7","ex":"","exJa":""},{"id":159,"word":"generally speaking","meaning":"一般的に言って","lesson":"7","ex":"","exJa":""},{"id":160,"word":"no less than ～","meaning":"～も","lesson":"8","ex":"","exJa":""},{"id":161,"word":"what is worse","meaning":"さらに悪いことには","lesson":"8","ex":"","exJa":""},{"id":162,"word":"may want to do","meaning":"～するとよいでしょう","lesson":"8","ex":"","exJa":""},{"id":163,"word":"weather permitting","meaning":"天気が許せば〔よければ〕","lesson":"8","ex":"","exJa":""},{"id":164,"word":"because of ～","meaning":"～のために","lesson":"8","ex":"","exJa":""},{"id":165,"word":"part with ～","meaning":"～を手放す、～を売り〔譲り〕渡す","lesson":"8","ex":"","exJa":""},{"id":166,"word":"for good 〔ever〕","meaning":"永久に、これっきり","lesson":"8","ex":"","exJa":""},{"id":167,"word":"～ and so on 〔forth〕","meaning":"～など","lesson":"8","ex":"","exJa":""},{"id":168,"word":"view A as B","meaning":"AをBとみなす〔考える〕","lesson":"8","ex":"","exJa":""},{"id":169,"word":"relieve A of B","meaning":"AからB（苦痛・困難など）を取り除く","lesson":"8","ex":"","exJa":""},{"id":170,"word":"let go of ～","meaning":"～を手放す、～をあきらめる","lesson":"8,9","ex":"","exJa":""},{"id":171,"word":"hold back ～","meaning":"～（感情など）を抑える、～を隠す","lesson":"9","ex":"","exJa":""},{"id":172,"word":"bring ～ to light","meaning":"～を明るみに出す","lesson":"9","ex":"","exJa":""},{"id":173,"word":"except for ～","meaning":"～を除けば","lesson":"9","ex":"","exJa":""},{"id":174,"word":"carry on (～)","meaning":"～し続ける、継続する","lesson":"9","ex":"","exJa":""},{"id":175,"word":"hold on to ～","meaning":"～を手離さないでいる、がんばる","lesson":"9","ex":"","exJa":""},{"id":176,"word":"from time to time","meaning":"時々","lesson":"9","ex":"","exJa":""},{"id":177,"word":"mistake A for B","meaning":"AをBと間違える","lesson":"9","ex":"","exJa":""},{"id":178,"word":"would (often) do","meaning":"（よく）...したものだ","lesson":"9","ex":"","exJa":""},{"id":179,"word":"think over ～","meaning":"（決断する前に）～をよく考える","lesson":"9","ex":"","exJa":""},{"id":180,"word":"turn into ～","meaning":"～に変わる、～になる","lesson":"10","ex":"","exJa":""},{"id":181,"word":"short of ～","meaning":"～が不足している、～に達していない","lesson":"10","ex":"","exJa":""},{"id":182,"word":"at times","meaning":"時々、たまには","lesson":"10","ex":"","exJa":""},{"id":183,"word":"at all","meaning":"《否定文で》少しも（...ない）","lesson":"10","ex":"","exJa":""},{"id":184,"word":"make certain (that...)","meaning":"確実に...であるようにする","lesson":"10","ex":"","exJa":""},{"id":185,"word":"remind A of B","meaning":"AにBを思い出させる","lesson":"10","ex":"","exJa":""},{"id":186,"word":"as such","meaning":"そういうものとして、それ自体","lesson":"10","ex":"","exJa":""},{"id":187,"word":"take A as B","meaning":"AをBとみなす〔受け取る〕","lesson":"10","ex":"","exJa":""},{"id":188,"word":"at hand","meaning":"（時間・空間的に）すぐ近くに","lesson":"10","ex":"","exJa":""},{"id":189,"word":"prepare for ～","meaning":"～に備える、～の準備をする","lesson":"10,11","ex":"","exJa":""},{"id":190,"word":"dispense with ～","meaning":"～なしで済ませる、～を省く","lesson":"11","ex":"","exJa":""},{"id":191,"word":"keep off ～","meaning":"～に近寄らない、～を避ける","lesson":"11","ex":"","exJa":""},{"id":192,"word":"put on ～","meaning":"～（CDなど）をかけ、～（服など）を身につける","lesson":"11","ex":"","exJa":""},{"id":193,"word":"What ... for?","meaning":"何のために...？","lesson":"11","ex":"","exJa":""},{"id":194,"word":"so as to do","meaning":"...するために","lesson":"11","ex":"","exJa":""},{"id":195,"word":"try ...ing","meaning":"試しに...してみる","lesson":"11","ex":"","exJa":""},{"id":196,"word":"be full of ～","meaning":"～に満ちている","lesson":"11","ex":"","exJa":""},{"id":197,"word":"calm down (～)","meaning":"静まる、～を静める","lesson":"11","ex":"","exJa":""},{"id":198,"word":"indulge in ～","meaning":"～にふける","lesson":"11","ex":"","exJa":""},{"id":199,"word":"be faced with 〔by〕 ～","meaning":"～に直面している","lesson":"11,12","ex":"","exJa":""},{"id":200,"word":"deal with ～","meaning":"～を処理する、～に対処する","lesson":"12","ex":"","exJa":""},{"id":201,"word":"get through ～","meaning":"～（困難など）を乗り切る","lesson":"12","ex":"","exJa":""},{"id":202,"word":"be of use","meaning":"役に立つ、有用な","lesson":"12","ex":"","exJa":""},{"id":203,"word":"in terms of ～","meaning":"～の点から、～の立場で","lesson":"12","ex":"","exJa":""},{"id":204,"word":"end up ～ 〔...ing〕","meaning":"結局～〔...すること〕になる","lesson":"12","ex":"","exJa":""},{"id":205,"word":"beyond question","meaning":"疑いの余地がない","lesson":"12","ex":"","exJa":""},{"id":206,"word":"take care of ～","meaning":"～の世話をする","lesson":"12","ex":"","exJa":""},{"id":207,"word":"in the end","meaning":"結局は、最後には","lesson":"12","ex":"","exJa":""},{"id":208,"word":"take it easy","meaning":"気楽にやる、休養を取る","lesson":"12","ex":"","exJa":""},{"id":209,"word":"had better do","meaning":"～した方がいい","lesson":"12,13","ex":"","exJa":""},{"id":210,"word":"be expected to do","meaning":"...することになっている","lesson":"13","ex":"","exJa":""},{"id":211,"word":"enable O to do","meaning":"Ｏが...できるようにする","lesson":"13","ex":"","exJa":""},{"id":212,"word":"yearn 〔long〕 for ～","meaning":"～を熱望〔切望〕する","lesson":"13","ex":"","exJa":""},{"id":213,"word":"at the expense of ～","meaning":"～を犠牲にして","lesson":"13","ex":"","exJa":""},{"id":214,"word":"How come ...?","meaning":"どうして〔なぜ〕...なのか","lesson":"13","ex":"","exJa":""},{"id":215,"word":"all the way","meaning":"ずっと","lesson":"13","ex":"","exJa":""},{"id":216,"word":"in order","meaning":"正常な状態で、整然と","lesson":"13","ex":"","exJa":""},{"id":217,"word":"come into being","meaning":"生まれる、出現する","lesson":"13","ex":"","exJa":""},{"id":218,"word":"in a sense 〔way〕","meaning":"ある意味で","lesson":"13","ex":"","exJa":""},{"id":219,"word":"hold on","meaning":"持続する、電話を切らないでおく","lesson":"14","ex":"","exJa":""},{"id":220,"word":"lie in ～","meaning":"～にある、～に存在する","lesson":"14","ex":"","exJa":""},{"id":221,"word":"come to one's senses","meaning":"正気を取り戻す、意識を取り戻す","lesson":"14","ex":"","exJa":""},{"id":222,"word":"be sure 〔certain〕 to do","meaning":"必ず...する","lesson":"14","ex":"","exJa":""},{"id":223,"word":"look after ～","meaning":"気を配る、～の世話をする","lesson":"14","ex":"","exJa":""},{"id":224,"word":"never fail to do","meaning":"必ず...する","lesson":"14","ex":"","exJa":""},{"id":225,"word":"having＋過去分詞","meaning":"...したので（完了分詞構文）","lesson":"14","ex":"","exJa":""},{"id":226,"word":"plenty of ～","meaning":"多くの～、十分な～","lesson":"14","ex":"","exJa":""},{"id":227,"word":"in contrast (to ～)","meaning":"（～とは）対照的に","lesson":"14","ex":"","exJa":""},{"id":228,"word":"out of breath","meaning":"息切れして","lesson":"14,15","ex":"","exJa":""},{"id":229,"word":"be equipped with ～","meaning":"～を備えている","lesson":"15","ex":"","exJa":""},{"id":230,"word":"hold one's breath","meaning":"息を止める、固唾を飲んで見守る","lesson":"15","ex":"","exJa":""},{"id":231,"word":"take in ～","meaning":"～を理解する、～を取り入れる","lesson":"15","ex":"","exJa":""},{"id":232,"word":"think about 〔of〕 ～","meaning":"～を思いつく、～のことを考える","lesson":"15","ex":"","exJa":""},{"id":233,"word":"back and forth","meaning":"行ったり来たり、前後〔左右〕に","lesson":"15","ex":"","exJa":""},{"id":234,"word":"aside from ～","meaning":"～は別にして〔除いて〕、～に加えて","lesson":"15","ex":"","exJa":""},{"id":235,"word":"be all ears","meaning":"一心に耳を傾けている","lesson":"15","ex":"","exJa":""},{"id":236,"word":"as soon as ...","meaning":"...するやいなや","lesson":"15,16","ex":"","exJa":""},{"id":237,"word":"pay attention to ～","meaning":"～に注意を払う","lesson":"16","ex":"","exJa":""},{"id":238,"word":"be sensitive to ～","meaning":"～に敏感である","lesson":"16","ex":"","exJa":""},{"id":239,"word":"be free from ～","meaning":"～（嫌なこと）を免れている","lesson":"16","ex":"","exJa":""},{"id":240,"word":"confine A to B","meaning":"AをB内にとどめる、AをBに限定する","lesson":"16","ex":"","exJa":""},{"id":241,"word":"it follows that ...","meaning":"（当然）...ということになる","lesson":"16","ex":"","exJa":""},{"id":242,"word":"by the way","meaning":"ところで","lesson":"16","ex":"","exJa":""},{"id":243,"word":"first of all","meaning":"第一に、まず","lesson":"16","ex":"","exJa":""},{"id":244,"word":"do＋動詞","meaning":"（強調のdo）本当に...する","lesson":"16","ex":"","exJa":""},{"id":245,"word":"strike A as B","meaning":"AにBという感じ〔印象〕を与える","lesson":"16","ex":"","exJa":""},{"id":246,"word":"complain (to A) about B","meaning":"（Aに）Bについて不平を言う","lesson":"16,17","ex":"","exJa":""},{"id":247,"word":"as often as not","meaning":"たいてい、しばしば","lesson":"17","ex":"","exJa":""},{"id":248,"word":"come to think of it","meaning":"考えてみると","lesson":"17","ex":"","exJa":""},{"id":249,"word":"be fed up with ～","meaning":"～にうんざりしている","lesson":"17","ex":"","exJa":""},{"id":250,"word":"give A credit for B","meaning":"BをAの功績とする、AのBを正しく評価する","lesson":"17","ex":"","exJa":""},{"id":251,"word":"apart from ～","meaning":"～は別として、～の他は","lesson":"17","ex":"","exJa":""},{"id":252,"word":"tell A from B","meaning":"AとBを区別する","lesson":"17","ex":"","exJa":""},{"id":253,"word":"look on 〔upon〕 A as B","meaning":"AをBであるとみなす","lesson":"17","ex":"","exJa":""},{"id":254,"word":"up to ～","meaning":"～まで","lesson":"17","ex":"","exJa":""},{"id":255,"word":"help oneself to ～","meaning":"～を自由にとって食べる〔飲む〕","lesson":"17","ex":"","exJa":""},{"id":256,"word":"break off (～)","meaning":"～をもぎ取る、急にやめる、別れる","lesson":"18","ex":"","exJa":""},{"id":257,"word":"accuse A of B","meaning":"AをBしたとして非難する、告発する","lesson":"18","ex":"","exJa":""},{"id":258,"word":"watch＋O＋...ing","meaning":"Oが...しているのを見る","lesson":"18","ex":"","exJa":""},{"id":259,"word":"比較級＋than any other ～","meaning":"他のどの～よりも...","lesson":"18","ex":"","exJa":""},{"id":260,"word":"that 〔those〕 of ～","meaning":"～のそれ","lesson":"18","ex":"","exJa":""},{"id":261,"word":"so that S will ...","meaning":"Sが...するために","lesson":"18","ex":"","exJa":""},{"id":262,"word":"in some ways","meaning":"ある意味で","lesson":"18","ex":"","exJa":""},{"id":263,"word":"at the mercy of ～","meaning":"～のなす〔言う〕がままに","lesson":"18","ex":"","exJa":""},{"id":264,"word":"admit to ～","meaning":"～（事実・罪など）を認める","lesson":"19","ex":"","exJa":""},{"id":265,"word":"come to terms with ～","meaning":"～と折り合いをつける","lesson":"19","ex":"","exJa":""},{"id":266,"word":"at issue","meaning":"論争中の、懸案となっている","lesson":"19","ex":"","exJa":""},{"id":267,"word":"find one's way ((in)to ～)","meaning":"（～に）やっとたどり着く","lesson":"19","ex":"","exJa":""},{"id":268,"word":"break up (～)","meaning":"～をばらばらにする、解散する","lesson":"19","ex":"","exJa":""},{"id":269,"word":"transform A into B","meaning":"AをBへと変化させる","lesson":"19","ex":"","exJa":""},{"id":270,"word":"turn up","meaning":"現れる","lesson":"19","ex":"","exJa":""},{"id":271,"word":"beyond description","meaning":"言葉で言い表せないほど","lesson":"19","ex":"","exJa":""},{"id":272,"word":"cling to ～","meaning":"～にしがみつく、～に固執する","lesson":"19","ex":"","exJa":""},{"id":273,"word":"take over ～","meaning":"～を支配する、～を引き継ぐ","lesson":"20","ex":"","exJa":""},{"id":274,"word":"impose A on B","meaning":"AをBに課す、押し付ける","lesson":"20","ex":"","exJa":""},{"id":275,"word":"be guilty of ～","meaning":"～の罪で有罪である","lesson":"20","ex":"","exJa":""},{"id":276,"word":"be willing to do","meaning":"～するのをいとわない","lesson":"20","ex":"","exJa":""},{"id":277,"word":"it is (about) time (that) ....","meaning":"そろそろ...してもよい頃だ","lesson":"20","ex":"","exJa":""},{"id":278,"word":"by ～","meaning":"～までには","lesson":"20","ex":"","exJa":""},{"id":279,"word":"have yet to do","meaning":"まだ...し（てい）ない","lesson":"20","ex":"","exJa":""},{"id":280,"word":"there is nothing for it but to do","meaning":"...するより仕方がない","lesson":"20","ex":"","exJa":""},{"id":281,"word":"be familiar with ～","meaning":"～（物事）をよく知っている","lesson":"20","ex":"","exJa":""},{"id":282,"word":"as a (general) rule","meaning":"概して、普通は","lesson":"20,21","ex":"","exJa":""},{"id":283,"word":"at odds with ～","meaning":"～と争って、～と反目して","lesson":"21","ex":"","exJa":""},{"id":284,"word":"on the whole","meaning":"概して、大体は","lesson":"21","ex":"","exJa":""},{"id":285,"word":"carry out ～","meaning":"～を実行する、～を果たす","lesson":"21","ex":"","exJa":""},{"id":286,"word":"burn down (～)","meaning":"～を全焼させる、焼け落ちる","lesson":"21","ex":"","exJa":""},{"id":287,"word":"set off (～)","meaning":"～を点火させる、出発する","lesson":"21","ex":"","exJa":""},{"id":288,"word":"with 〔in〕 regard to ～","meaning":"～に関して","lesson":"21","ex":"","exJa":""},{"id":289,"word":"look out (for～)","meaning":"（～に）気をつける、用心する","lesson":"21","ex":"","exJa":""},{"id":290,"word":"inform A of 〔about〕 B","meaning":"AにBを知らせる","lesson":"21","ex":"","exJa":""},{"id":291,"word":"prior to ～","meaning":"～より前に、～に先立って","lesson":"21","ex":"","exJa":""},{"id":292,"word":"quite a few","meaning":"かなり多くの","lesson":"21,22","ex":"","exJa":""},{"id":293,"word":"get rid of ～","meaning":"～を取り除く","lesson":"22","ex":"","exJa":""},{"id":294,"word":"allow for ～","meaning":"～を考慮に入れる、～を可能にする","lesson":"22","ex":"","exJa":""},{"id":295,"word":"as ～ as one can","meaning":"できるだけ～","lesson":"22","ex":"","exJa":""},{"id":296,"word":"on the face of it","meaning":"一見したところでは","lesson":"22","ex":"","exJa":""},{"id":297,"word":"be composed of ～","meaning":"～から成り立っている","lesson":"22","ex":"","exJa":""},{"id":298,"word":"distinguish A from B","meaning":"AとBを区別する","lesson":"22","ex":"","exJa":""},{"id":299,"word":"come into view 〔sight〕","meaning":"見えるようになる、目に入る","lesson":"22","ex":"","exJa":""},{"id":300,"word":"in honor of ～","meaning":"～に敬意を表して、～を祝って","lesson":"22","ex":"","exJa":""},{"id":301,"word":"look for ～","meaning":"～を探す","lesson":"22","ex":"","exJa":""},{"id":302,"word":"refer to ～","meaning":"～に言及する、～を参照する","lesson":"22","ex":"","exJa":""},{"id":303,"word":"amount to ～","meaning":"（総計）～に達する、～に等しい","lesson":"23","ex":"","exJa":""},{"id":304,"word":"in the way 〔in one's way〕","meaning":"邪魔になって","lesson":"23","ex":"","exJa":""},{"id":305,"word":"be anxious for ～","meaning":"～を切望している","lesson":"23","ex":"","exJa":""},{"id":306,"word":"catch up (with ～)","meaning":"（～に）追いつく","lesson":"23","ex":"","exJa":""},{"id":307,"word":"never ～ without ...ing","meaning":"～すれば必ず...する","lesson":"23","ex":"","exJa":""},{"id":308,"word":"must have＋過去分詞","meaning":"...したに違いない","lesson":"23","ex":"","exJa":""},{"id":309,"word":"every time ...","meaning":"...するたびに","lesson":"23","ex":"","exJa":""},{"id":310,"word":"such (a) 形容詞＋名詞＋that ...","meaning":"大変～なので......するくらい～","lesson":"23","ex":"","exJa":""},{"id":311,"word":"be associated with ～","meaning":"～と関係がある","lesson":"23","ex":"","exJa":""},{"id":312,"word":"as it were","meaning":"いわば","lesson":"24","ex":"","exJa":""},{"id":313,"word":"tend to do","meaning":"...する傾向がある","lesson":"24","ex":"","exJa":""},{"id":314,"word":"be superior to ～","meaning":"～より優れている","lesson":"24","ex":"","exJa":""},{"id":315,"word":"in proportion (to ～)","meaning":"（～に）比例して、つり合って","lesson":"24","ex":"","exJa":""},{"id":316,"word":"on (the) average","meaning":"平均して、概して","lesson":"24","ex":"","exJa":""},{"id":317,"word":"in spite of ～","meaning":"～にもかかわらず","lesson":"24","ex":"","exJa":""},{"id":318,"word":"be connected with 〔to〕 ～","meaning":"～とつながっている、～と関係がある","lesson":"24","ex":"","exJa":""},{"id":319,"word":"for the most part","meaning":"たいてい、大部分は","lesson":"24","ex":"","exJa":""},{"id":320,"word":"all in all","meaning":"概して、全体として","lesson":"24","ex":"","exJa":""},{"id":321,"word":"as for ～","meaning":"～に関して、～について","lesson":"24","ex":"","exJa":""},{"id":322,"word":"far from ～","meaning":"決して～ではない","lesson":"25","ex":"","exJa":""},{"id":323,"word":"(on the one hand ～,) on the other hand ...","meaning":"（一方では～）他方では...","lesson":"25","ex":"","exJa":""},{"id":324,"word":"not necessarily","meaning":"必ずしも...（とは限ら）ない","lesson":"25","ex":"","exJa":""},{"id":325,"word":"it doesn't matter whether ...","meaning":"...かどうかは問題ではない","lesson":"25","ex":"","exJa":""},{"id":326,"word":"keep in touch with ～","meaning":"～と連絡を取る、～と接触を保つ","lesson":"25","ex":"","exJa":""},{"id":327,"word":"all the 比較級 (...)","meaning":"それだけいっそう〔ますます〕","lesson":"25","ex":"","exJa":""},{"id":328,"word":"～ one thing, ... another","meaning":"～と...は別のことである","lesson":"25","ex":"","exJa":""},{"id":329,"word":"on the move","meaning":"移動中で、せわしなく動き回って","lesson":"25,26","ex":"","exJa":""},{"id":330,"word":"at risk","meaning":"危険にさらされた","lesson":"26","ex":"","exJa":""},{"id":331,"word":"on one's way (to ～)","meaning":"（～への）途中で","lesson":"26","ex":"","exJa":""},{"id":332,"word":"right now","meaning":"現在、今すぐ","lesson":"26","ex":"","exJa":""},{"id":333,"word":"at random","meaning":"無作為に、雑然と","lesson":"26","ex":"","exJa":""},{"id":334,"word":"abide by ～","meaning":"～（規則・約束などを）忠実に守る","lesson":"26","ex":"","exJa":""},{"id":335,"word":"put down ～","meaning":"～を下に置く、～を書き留める","lesson":"26","ex":"","exJa":""},{"id":336,"word":"as a matter of course","meaning":"当然のことながら","lesson":"26","ex":"","exJa":""},{"id":337,"word":"be all eyes","meaning":"一心に見る","lesson":"26","ex":"","exJa":""},{"id":338,"word":"commit 〔make〕 an error","meaning":"過ちを犯す、間違える","lesson":"26","ex":"","exJa":""},{"id":339,"word":"fail to do","meaning":"...できない、...しない","lesson":"27","ex":"","exJa":""},{"id":340,"word":"it goes without saying that ...","meaning":"...は言うまでもない","lesson":"27","ex":"","exJa":""},{"id":341,"word":"cannot help ...ing","meaning":"...せずにはいられない","lesson":"27","ex":"","exJa":""},{"id":342,"word":"see O ...ing","meaning":"Ｏが...しているのを見る","lesson":"27","ex":"","exJa":""},{"id":343,"word":"regret ...ing","meaning":"...したことを後悔する","lesson":"27","ex":"","exJa":""},{"id":344,"word":"be familiar to ～","meaning":"～になじみがある、～によく知られている","lesson":"27","ex":"","exJa":""},{"id":345,"word":"dependent on 〔upon〕 ～","meaning":"～に依存している、～に頼っている","lesson":"27","ex":"","exJa":""},{"id":346,"word":"be based on 〔upon〕 ～","meaning":"～に基づいている","lesson":"27","ex":"","exJa":""},{"id":347,"word":"become aware of ～","meaning":"～に気づく、～を認識する","lesson":"28","ex":"","exJa":""},{"id":348,"word":"according to ～","meaning":"～によると、～に従って","lesson":"28","ex":"","exJa":""},{"id":349,"word":"in charge of ～","meaning":"～を担当して、～の責任者で","lesson":"28","ex":"","exJa":""},{"id":350,"word":"be responsible for ～","meaning":"～の原因である、～に責任がある","lesson":"28","ex":"","exJa":""},{"id":351,"word":"be good at ～","meaning":"～が得意である","lesson":"28","ex":"","exJa":""},{"id":352,"word":"～ as well","meaning":"同様に～、～もまた","lesson":"28","ex":"","exJa":""},{"id":353,"word":"suffer from ～","meaning":"～を患う、～で苦しむ","lesson":"28","ex":"","exJa":""},{"id":354,"word":"(every) now and then","meaning":"時々","lesson":"28","ex":"","exJa":""},{"id":355,"word":"be conscious of ～","meaning":"～を意識している、～に気づいている","lesson":"28","ex":"","exJa":""},{"id":356,"word":"The reason is that ...","meaning":"その理由は...だからだ","lesson":"28,29","ex":"","exJa":""},{"id":357,"word":"the same ～ as ...","meaning":"...と同じ（ような）～","lesson":"29","ex":"","exJa":""},{"id":358,"word":"provided (that) ...","meaning":"もし...なら","lesson":"29","ex":"","exJa":""},{"id":359,"word":"by the time ...","meaning":"...までには","lesson":"29","ex":"","exJa":""},{"id":360,"word":"come about","meaning":"起こる、生じる","lesson":"29","ex":"","exJa":""},{"id":361,"word":"in the first place","meaning":"まず、第一に","lesson":"29","ex":"","exJa":""},{"id":362,"word":"date back to ～","meaning":"～にさかのぼる","lesson":"29","ex":"","exJa":""},{"id":363,"word":"pride oneself on ～","meaning":"～を誇りに思う、～が自慢である","lesson":"29","ex":"","exJa":""},{"id":364,"word":"make A from B","meaning":"B(原料）からAを作る","lesson":"29","ex":"","exJa":""},{"id":365,"word":"fall apart","meaning":"ばらばらに壊れる、崩壊する","lesson":"29","ex":"","exJa":""},{"id":366,"word":"deal in ～","meaning":"～（商品）を扱う","lesson":"29,30","ex":"","exJa":""},{"id":367,"word":"break in","meaning":"侵入する、押し入る","lesson":"30","ex":"","exJa":""},{"id":368,"word":"in the presence of ～","meaning":"～の（面）前で、～がいる前で","lesson":"30","ex":"","exJa":""},{"id":369,"word":"succeed in ～","meaning":"～に成功する","lesson":"30","ex":"","exJa":""},{"id":370,"word":"be free of ～","meaning":"～（有害物）を含まない","lesson":"30","ex":"","exJa":""},{"id":371,"word":"make for ～","meaning":"～を生み出す、～に役立つ、～へ向かって行く","lesson":"30","ex":"","exJa":""},{"id":372,"word":"no longer ...","meaning":"もはや...ない","lesson":"30","ex":"","exJa":""},{"id":373,"word":"fill out ～","meaning":"～に（必要事項などを）記入する","lesson":"30","ex":"","exJa":""},{"id":374,"word":"make a reservation","meaning":"予約する","lesson":"30","ex":"","exJa":""},{"id":375,"word":"have a good time (...ing)","meaning":"（...して）楽しい時を過ごす","lesson":"30,31","ex":"","exJa":""},{"id":376,"word":"not A but B","meaning":"AではなくBである","lesson":"31","ex":"","exJa":""},{"id":377,"word":"believe in ～","meaning":"～（の存在・人格）を信じる","lesson":"31","ex":"","exJa":""},{"id":378,"word":"lay out ～","meaning":"～（考えなど）を述べる、～の設計をする","lesson":"31","ex":"","exJa":""},{"id":379,"word":"object to ～","meaning":"～に反対する","lesson":"31","ex":"","exJa":""},{"id":380,"word":"feel free to do","meaning":"自由に...する、遠慮なく...する","lesson":"31","ex":"","exJa":""},{"id":381,"word":"live for ～","meaning":"～のために生きる","lesson":"31","ex":"","exJa":""},{"id":382,"word":"make good (on ～)","meaning":"(～を）果たす、～（損失など）を償う","lesson":"31","ex":"","exJa":""},{"id":383,"word":"come to an end","meaning":"終わる","lesson":"31,32","ex":"","exJa":""},{"id":384,"word":"in private","meaning":"個人的〔私的〕に","lesson":"32","ex":"","exJa":""},{"id":385,"word":"by chance","meaning":"たまたま、偶然","lesson":"32","ex":"","exJa":""},{"id":386,"word":"ask for ～","meaning":"～（助け・物）を求める","lesson":"32","ex":"","exJa":""},{"id":387,"word":"come true","meaning":"実現する","lesson":"32","ex":"","exJa":""},{"id":388,"word":"all the time","meaning":"いつも、その間ずっと","lesson":"32","ex":"","exJa":""},{"id":389,"word":"prefer A to B","meaning":"BよりAを好む","lesson":"32","ex":"","exJa":""},{"id":390,"word":"if ... at all","meaning":"いやしくも〔仮にも〕...したなら","lesson":"32","ex":"","exJa":""},{"id":391,"word":"none the 比較級 because ...","meaning":"...にもかかわらずそれでもなお","lesson":"32","ex":"","exJa":""},{"id":392,"word":"in general","meaning":"一般に","lesson":"32","ex":"","exJa":""},{"id":393,"word":"be characteristic of ～","meaning":"～の特徴〔に特有のもの〕である","lesson":"32,33","ex":"","exJa":""},{"id":394,"word":"be certain 〔sure〕 of ～","meaning":"～を確信している","lesson":"33","ex":"","exJa":""},{"id":395,"word":"out of place","meaning":"場違いな、間違った場所の","lesson":"33","ex":"","exJa":""},{"id":396,"word":"in comparison with ～","meaning":"～と比較すると","lesson":"33","ex":"","exJa":""},{"id":397,"word":"something of a ～","meaning":"ちょっとした～、かなりの～","lesson":"33","ex":"","exJa":""},{"id":398,"word":"at a loss","meaning":"途方に暮れて","lesson":"33","ex":"","exJa":""},{"id":399,"word":"under repair","meaning":"修理中で","lesson":"33","ex":"","exJa":""},{"id":400,"word":"in the future","meaning":"将来（に）、今後","lesson":"33","ex":"","exJa":""},{"id":401,"word":"scores of ～","meaning":"多数の～","lesson":"33","ex":"","exJa":""},{"id":402,"word":"make sense of ～","meaning":"～を理解する","lesson":"33","ex":"","exJa":""},{"id":403,"word":"insist that ...","meaning":"...だと言い張る","lesson":"33","ex":"","exJa":""},{"id":404,"word":"have 〔take〕 a look at ～","meaning":"～を見る","lesson":"33,34","ex":"","exJa":""},{"id":405,"word":"come by ～","meaning":"立ち寄る、（偶然）手に入れる","lesson":"34","ex":"","exJa":""},{"id":406,"word":"feel obliged to do","meaning":"...せざるを得ないと感じる","lesson":"34","ex":"","exJa":""},{"id":407,"word":"a sheet of ～","meaning":"1枚の～","lesson":"34","ex":"","exJa":""},{"id":408,"word":"yield to ～","meaning":"～に屈服する、～に敗れる","lesson":"34","ex":"","exJa":""},{"id":409,"word":"on purpose","meaning":"故意に","lesson":"34","ex":"","exJa":""},{"id":410,"word":"catch on （to ～)","meaning":"～（意味など）をつかむ、広まる","lesson":"34","ex":"","exJa":""},{"id":411,"word":"in favor of ～","meaning":"～に賛成して、～の利益となるように","lesson":"34","ex":"","exJa":""},{"id":412,"word":"fall back on ～","meaning":"（困ったときに）～に頼る","lesson":"34","ex":"","exJa":""},{"id":413,"word":"get the better of ～","meaning":"～に打ち勝つ","lesson":"34","ex":"","exJa":""},{"id":414,"word":"give in (to ～)","meaning":"（～に）屈する、～に従う","lesson":"35","ex":"","exJa":""},{"id":415,"word":"make up one's mind (to do)","meaning":"（...する）決心をする","lesson":"35","ex":"","exJa":""},{"id":416,"word":"on one's own","meaning":"1人で、独力で","lesson":"35","ex":"","exJa":""},{"id":417,"word":"～ where ...","meaning":"...する（ところの）～","lesson":"35","ex":"","exJa":""},{"id":418,"word":"even if 〔though〕 ...","meaning":"たとえ...であっても","lesson":"35","ex":"","exJa":""},{"id":419,"word":"have＋O＋原形","meaning":"Ｏに...してもらう〔させる〕","lesson":"35","ex":"","exJa":""},{"id":420,"word":"either A or B","meaning":"AかBのどちらか","lesson":"35","ex":"","exJa":""},{"id":421,"word":"go into effect","meaning":"（法律などが）発効する、実施される","lesson":"35","ex":"","exJa":""},{"id":422,"word":"come of age","meaning":"成人に達する、大人になる","lesson":"35","ex":"","exJa":""},{"id":423,"word":"be free to do","meaning":"自由に...する、好きなようにできる","lesson":"35,36","ex":"","exJa":""},{"id":424,"word":"for the time being","meaning":"差し当たり、しばらくの間","lesson":"36","ex":"","exJa":""},{"id":425,"word":"agree with ～","meaning":"～（人・意見）に賛成する","lesson":"36","ex":"","exJa":""},{"id":426,"word":"bar A from B","meaning":"AにBを禁止する、AをBから締め出す","lesson":"36","ex":"","exJa":""},{"id":427,"word":"approve of ～","meaning":"～をよいと認める、～に賛成する","lesson":"36","ex":"","exJa":""},{"id":428,"word":"on 〔in〕 one's behalf","meaning":"～に代わって、～のために","lesson":"36","ex":"","exJa":""},{"id":429,"word":"at heart","meaning":"心の底では、根は","lesson":"36","ex":"","exJa":""},{"id":430,"word":"get involved in ～","meaning":"～に巻き込まれる、～に関わる","lesson":"36","ex":"","exJa":""},{"id":431,"word":"on the part of ～","meaning":"～の方〔側〕では","lesson":"36,37","ex":"","exJa":""},{"id":432,"word":"give way (to ～)","meaning":"（～に）降参〔屈服〕する、道を譲る","lesson":"37","ex":"","exJa":""},{"id":433,"word":"be to do","meaning":"...することになっている","lesson":"37","ex":"","exJa":""},{"id":434,"word":"to be frank (with ～)","meaning":"（～に）率直に言って","lesson":"37","ex":"","exJa":""},{"id":435,"word":"there is no ...ing","meaning":"...することができない","lesson":"37","ex":"","exJa":""},{"id":436,"word":"on ...ing","meaning":"...するとすぐに","lesson":"37","ex":"","exJa":""},{"id":437,"word":"get O to do","meaning":"Ｏに...してもらう〔させる〕","lesson":"37","ex":"","exJa":""},{"id":438,"word":"to say the least (of it)","meaning":"控えめに言っても","lesson":"37","ex":"","exJa":""},{"id":439,"word":"as a whole","meaning":"全体として","lesson":"37","ex":"","exJa":""},{"id":440,"word":"stand out","meaning":"目立つ、際立つ","lesson":"37","ex":"","exJa":""},{"id":441,"word":"what is more","meaning":"そのうえ、さらに","lesson":"37","ex":"","exJa":""},{"id":442,"word":"to say nothing of ～","meaning":"～は言うまでもない","lesson":"38","ex":"","exJa":""},{"id":443,"word":"dwell on ～","meaning":"～のことをくよくよ考える、話す","lesson":"38","ex":"","exJa":""},{"id":444,"word":"speak out","meaning":"思い切って意見を述べる","lesson":"38","ex":"","exJa":""},{"id":445,"word":"all at once","meaning":"突然","lesson":"38","ex":"","exJa":""},{"id":446,"word":"have ～ in mind","meaning":"～のことを思って〔意図して〕いる","lesson":"38","ex":"","exJa":""},{"id":447,"word":"be satisfied with ～","meaning":"～に満足している","lesson":"38","ex":"","exJa":""},{"id":448,"word":"at any rate","meaning":"とにかく、いずれにせよ","lesson":"38","ex":"","exJa":""},{"id":449,"word":"it occurs (to 人) that ...","meaning":"（人に）...が思い浮かぶ","lesson":"38","ex":"","exJa":""},{"id":450,"word":"roughly speaking","meaning":"大ざっぱに言って","lesson":"38","ex":"","exJa":""},{"id":451,"word":"speaking of ～","meaning":"～と言えば","lesson":"38,39","ex":"","exJa":""},{"id":452,"word":"not ... in the least","meaning":"まったく～ない","lesson":"39","ex":"","exJa":""},{"id":453,"word":"show A around B","meaning":"AにBを案内して回る","lesson":"39","ex":"","exJa":""},{"id":454,"word":"take pride in ～","meaning":"～に誇りを持つ","lesson":"39","ex":"","exJa":""},{"id":455,"word":"with pleasure","meaning":"喜んで","lesson":"39","ex":"","exJa":""},{"id":456,"word":"show up","meaning":"現れる","lesson":"39","ex":"","exJa":""},{"id":457,"word":"come out","meaning":"表明する、現れる、明らかになる","lesson":"39","ex":"","exJa":""},{"id":458,"word":"read between the lines","meaning":"行間を読む、言外の意味を読み取る","lesson":"39","ex":"","exJa":""},{"id":459,"word":"wear out ～","meaning":"～が尽きる、～を疲れさせる","lesson":"39","ex":"","exJa":""},{"id":460,"word":"on time","meaning":"時間通りに","lesson":"39","ex":"","exJa":""},{"id":461,"word":"on board","meaning":"（船・飛行機などに）搭乗して","lesson":"39","ex":"","exJa":""},{"id":462,"word":"leave ～ alone","meaning":"～を放っておく、～を1人にしておく","lesson":"39","ex":"","exJa":""},{"id":463,"word":"sit up","meaning":"寝ないでいる、きちんと座る","lesson":"40","ex":"","exJa":""},{"id":464,"word":"in time (for ～)","meaning":"（～に）間に合って","lesson":"40","ex":"","exJa":""},{"id":465,"word":"pull up (～)","meaning":"～（車）を止める、車が止まる","lesson":"40","ex":"","exJa":""},{"id":466,"word":"the first time ...","meaning":"初めて...する時","lesson":"40","ex":"","exJa":""},{"id":467,"word":"should have＋過去分詞","meaning":"...すべきだったのに、したはずだ","lesson":"40","ex":"","exJa":""},{"id":468,"word":"call at ～","meaning":"～（場所）にちょっと立ち寄る","lesson":"40","ex":"","exJa":""},{"id":469,"word":"rain cats and dogs","meaning":"土砂降りに降る","lesson":"40","ex":"","exJa":""},{"id":470,"word":"send for ～","meaning":"～を呼びにやる","lesson":"40","ex":"","exJa":""},{"id":471,"word":"more or less","meaning":"多少、多かれ少なかれ、およそ","lesson":"40","ex":"","exJa":""},{"id":472,"word":"watch one's step","meaning":"足元に気を付ける","lesson":"40,41","ex":"","exJa":""},{"id":473,"word":"（just） in case","meaning":"...の場合に備えて、万一のために","lesson":"41","ex":"","exJa":""},{"id":474,"word":"by far","meaning":"ずばぬけて、ずっと","lesson":"41","ex":"","exJa":""},{"id":475,"word":"look up to ～","meaning":"～を尊敬する","lesson":"41","ex":"","exJa":""},{"id":476,"word":"speak well of ～","meaning":"～のことをよく言う、～をほめる","lesson":"41","ex":"","exJa":""},{"id":477,"word":"make A (out) of B","meaning":"BでAを作る","lesson":"41","ex":"","exJa":""},{"id":478,"word":"hear from ～","meaning":"～から便り〔連絡〕がある","lesson":"41","ex":"","exJa":""},{"id":479,"word":"give ～ a call","meaning":"～に電話をかける","lesson":"41","ex":"","exJa":""},{"id":480,"word":"let down ～","meaning":"～の期待を裏切る、がっかりさせる","lesson":"41","ex":"","exJa":""},{"id":481,"word":"get married (to ～)","meaning":"（～と）結婚する","lesson":"41,42","ex":"","exJa":""},{"id":482,"word":"adhere to ～","meaning":"（規則・主義など）を忠実に守る","lesson":"42","ex":"","exJa":""},{"id":483,"word":"keep to ～","meaning":"～から外れない、～を守る","lesson":"42","ex":"","exJa":""},{"id":484,"word":"one of these days","meaning":"そのうち、近いうちに","lesson":"42","ex":"","exJa":""},{"id":485,"word":"owe A to B","meaning":"AはBのおかげである、AをBに借りている","lesson":"42","ex":"","exJa":""},{"id":486,"word":"come home to ～","meaning":"痛切に感じられる、～に理解される","lesson":"42","ex":"","exJa":""},{"id":487,"word":"～ (名詞)＋that ...","meaning":"...という～（同格のthat）","lesson":"42","ex":"","exJa":""},{"id":488,"word":"it is no use ...ing","meaning":"...しても無駄だ","lesson":"42","ex":"","exJa":""},{"id":489,"word":"grow up to do","meaning":"成長して...になる","lesson":"42","ex":"","exJa":""},{"id":490,"word":"ought to have＋過去分詞","meaning":"...すべきだったのに、したはずだ","lesson":"43","ex":"","exJa":""},{"id":491,"word":"without fail","meaning":"必ず、間違いなく","lesson":"43","ex":"","exJa":""},{"id":492,"word":"with ease","meaning":"容易に、楽々と","lesson":"43","ex":"","exJa":""},{"id":493,"word":"attribute A to B","meaning":"AがBに起因すると考える","lesson":"43","ex":"","exJa":""},{"id":494,"word":"be equivalent to ～","meaning":"～に相当する、～に等しい","lesson":"43","ex":"","exJa":""},{"id":495,"word":"call for ～","meaning":"～を呼び求める、～を必要とする","lesson":"43","ex":"","exJa":""},{"id":496,"word":"the number of ～","meaning":"～の数","lesson":"43","ex":"","exJa":""},{"id":497,"word":"at a time","meaning":"1度に、同時に","lesson":"43","ex":"","exJa":""},{"id":498,"word":"at (the) most","meaning":"せいぜい、多くて","lesson":"43","ex":"","exJa":""},{"id":499,"word":"be worthy of ～","meaning":"～に値する","lesson":"43","ex":"","exJa":""},{"id":500,"word":"be essential to ～","meaning":"～にとって不可欠である","lesson":"44","ex":"","exJa":""},{"id":501,"word":"write down ～","meaning":"～を書き留める、～をメモする","lesson":"44","ex":"","exJa":""},{"id":502,"word":"go over ～","meaning":"～を見直す、繰り返す、調べる","lesson":"44","ex":"","exJa":""},{"id":503,"word":"the moment ...","meaning":"...するとすぐに、した瞬間に","lesson":"44","ex":"","exJa":""},{"id":504,"word":"What is S like?","meaning":"Sはどのようなものか","lesson":"44","ex":"","exJa":""},{"id":505,"word":"go for a drive","meaning":"ドライブに出掛ける","lesson":"44","ex":"","exJa":""},{"id":506,"word":"spend ～ (in) ...ing","meaning":"～（時）を...して過ごす","lesson":"44","ex":"","exJa":""},{"id":507,"word":"give out （～）","meaning":"（体力・貯えなどが）尽きる、配布する","lesson":"44","ex":"","exJa":""},{"id":508,"word":"run out of ～","meaning":"～を切らす、～がなくなる","lesson":"45","ex":"","exJa":""},{"id":509,"word":"take the place of ～","meaning":"～に取って代わる","lesson":"45","ex":"","exJa":""},{"id":510,"word":"by degrees","meaning":"次第に、徐々に","lesson":"45","ex":"","exJa":""},{"id":511,"word":"attend to ～","meaning":"～の世話をする","lesson":"45","ex":"","exJa":""},{"id":512,"word":"have ～ on one's mind","meaning":"～のことを気にかける、心配している","lesson":"45","ex":"","exJa":""},{"id":513,"word":"in need (of ～)","meaning":"（～を）必要として","lesson":"45","ex":"","exJa":""},{"id":514,"word":"care for ～","meaning":"～の世話をする","lesson":"45","ex":"","exJa":""},{"id":515,"word":"break into ～","meaning":"急に～し始める、～に押し入る","lesson":"45","ex":"","exJa":""},{"id":516,"word":"take pity on ～","meaning":"～をかわいそうに思って手を貸す","lesson":"45","ex":"","exJa":""},{"id":517,"word":"be anxious about ～","meaning":"～を心配〔憂慮〕している","lesson":"46","ex":"","exJa":""},{"id":518,"word":"do without ～","meaning":"～なしですます","lesson":"46","ex":"","exJa":""},{"id":519,"word":"A is not ～ any more than B is ...","meaning":"Bが...でないのと同様にAは～ない","lesson":"46","ex":"","exJa":""},{"id":520,"word":"nothing is as ～ as A","meaning":"Aほど～なものはない","lesson":"46","ex":"","exJa":""},{"id":521,"word":"What do you say to ...ing?","meaning":"...するのはどうか","lesson":"46","ex":"","exJa":""},{"id":522,"word":"a great deal (of ～)","meaning":"かなりたくさん（の～）","lesson":"46","ex":"","exJa":""},{"id":523,"word":"result from ～","meaning":"～から（結果として）生じる","lesson":"46","ex":"","exJa":""},{"id":524,"word":"be filled with ～","meaning":"～でいっぱいである","lesson":"46","ex":"","exJa":""},{"id":525,"word":"be devoid of ～","meaning":"～がない、～を欠いている","lesson":"47","ex":"","exJa":""},{"id":526,"word":"do ～ harm","meaning":"～に害を与える","lesson":"47","ex":"","exJa":""},{"id":527,"word":"turn on ～","meaning":"～（火・明かり・スイッチなど）をつける","lesson":"47","ex":"","exJa":""},{"id":528,"word":"as a result (of ～)","meaning":"（～の）結果として","lesson":"47","ex":"","exJa":""},{"id":529,"word":"deprive A of B","meaning":"AからBを奪う","lesson":"47","ex":"","exJa":""},{"id":530,"word":"rely on ～ (for ...)","meaning":"（...について）～に頼る","lesson":"47","ex":"","exJa":""},{"id":531,"word":"go astray","meaning":"道に迷う、（ものが）なくなる","lesson":"47","ex":"","exJa":""},{"id":532,"word":"comply with ～","meaning":"～（規則・命令など）に従う、応じる","lesson":"47","ex":"","exJa":""},{"id":533,"word":"turn off ～","meaning":"～（火・明かりなど）を消す","lesson":"48","ex":"","exJa":""},{"id":534,"word":"out of sight","meaning":"見えないところに","lesson":"48","ex":"","exJa":""},{"id":535,"word":"cause O to do","meaning":"Ｏに...させる","lesson":"48","ex":"","exJa":""},{"id":536,"word":"come to light","meaning":"明らかになる、明るみに出る","lesson":"48","ex":"","exJa":""},{"id":537,"word":"as many as ～","meaning":"～ほど多数〔多量〕の","lesson":"48","ex":"","exJa":""},{"id":538,"word":"be worried about ～","meaning":"～を心配する、～を気にする","lesson":"48","ex":"","exJa":""},{"id":539,"word":"take notice of ～","meaning":"～に注意を払う、～を気に留める","lesson":"48","ex":"","exJa":""},{"id":540,"word":"a lot of ～","meaning":"多数の～、多量の～","lesson":"48","ex":"","exJa":""},{"id":541,"word":"depend on ～","meaning":"～次第である、～を頼りにする","lesson":"48","ex":"","exJa":""},{"id":542,"word":"to be sure","meaning":"確かに、なるほど","lesson":"49","ex":"","exJa":""},{"id":543,"word":"owing to ～","meaning":"～が原因で、～のために","lesson":"49","ex":"","exJa":""},{"id":544,"word":"interfere with ～","meaning":"～を妨げる、～の邪魔をする","lesson":"49","ex":"","exJa":""},{"id":545,"word":"in addition (to ～)","meaning":"（～に）加えて、さらに","lesson":"49","ex":"","exJa":""},{"id":546,"word":"die out","meaning":"絶滅〔消滅〕する","lesson":"49","ex":"","exJa":""},{"id":547,"word":"take account of ～","meaning":"～を考慮に入れる","lesson":"49","ex":"","exJa":""},{"id":548,"word":"work on ～","meaning":"～に取り組む、～に影響を与える","lesson":"49","ex":"","exJa":""},{"id":549,"word":"as far as ...","meaning":"...まで、する限りでは","lesson":"49","ex":"","exJa":""},{"id":550,"word":"it won't be long before ...","meaning":"すぐに...だろう","lesson":"49","ex":"","exJa":""},{"id":551,"word":"under control","meaning":"制御下に、管理下に","lesson":"49","ex":"","exJa":""},{"id":552,"word":"be derived from ～","meaning":"～に由来する","lesson":"50","ex":"","exJa":""},{"id":553,"word":"on account of ～","meaning":"～のために","lesson":"50","ex":"","exJa":""},{"id":554,"word":"make sure （that ...）","meaning":"～〔...であることを〕確認する","lesson":"50","ex":"","exJa":""},{"id":555,"word":"play a part in ～","meaning":"～において役割を果たす","lesson":"50","ex":"","exJa":""},{"id":556,"word":"keep up with ～","meaning":"～に（遅れないで）ついていく","lesson":"50","ex":"","exJa":""},{"id":557,"word":"engage in ～","meaning":"～に従事する、～に関与する","lesson":"50","ex":"","exJa":""},{"id":558,"word":"give off ～","meaning":"～（におい・熱・光など）を発する","lesson":"50","ex":"","exJa":""},{"id":559,"word":"prevent ～ from ...ing","meaning":"～が...するのを妨げる","lesson":"50","ex":"","exJa":""},{"id":560,"word":"stay up","meaning":"寝ないでいる、夜更かしをする","lesson":"51","ex":"","exJa":""},{"id":561,"word":"at least","meaning":"少なくとも","lesson":"51","ex":"","exJa":""},{"id":562,"word":"as ～ as possible","meaning":"できるだけ～","lesson":"51","ex":"","exJa":""},{"id":563,"word":"make it a rule to do","meaning":"...することにしている","lesson":"51","ex":"","exJa":""},{"id":564,"word":"take it for granted that ...","meaning":"...は当然だと思う","lesson":"51","ex":"","exJa":""},{"id":565,"word":"have difficulty (in) ...ing","meaning":"...するのに苦労する","lesson":"51","ex":"","exJa":""},{"id":566,"word":"find fault with ～","meaning":"～のあらを探す","lesson":"51","ex":"","exJa":""},{"id":567,"word":"give up ～","meaning":"～をあきらめる、～をやめる","lesson":"51","ex":"","exJa":""},{"id":568,"word":"regardless of ～","meaning":"～に関係なく、～に構わず","lesson":"51","ex":"","exJa":""},{"id":569,"word":"get over ～","meaning":"～を克服する","lesson":"51","ex":"","exJa":""},{"id":570,"word":"look at ～","meaning":"～を見る","lesson":"52","ex":"","exJa":""},{"id":571,"word":"be inferior to ～","meaning":"～より劣る","lesson":"52","ex":"","exJa":""},{"id":572,"word":"on the contrary","meaning":"それどころか","lesson":"52","ex":"","exJa":""},{"id":573,"word":"give rise to ～","meaning":"～を引き起こす","lesson":"52","ex":"","exJa":""},{"id":574,"word":"make an effort (to do)","meaning":"（...しようと）努力する","lesson":"52","ex":"","exJa":""},{"id":575,"word":"make a point of ...ing","meaning":"必ず...することにしている","lesson":"52","ex":"","exJa":""},{"id":576,"word":"each time ...","meaning":"...するたびに","lesson":"52","ex":"","exJa":""},{"id":577,"word":"for nothing","meaning":"無駄に、ただで","lesson":"52","ex":"","exJa":""},{"id":578,"word":"feel like ...ing","meaning":"...したい気がする","lesson":"52","ex":"","exJa":""},{"id":579,"word":"when it comes to ～","meaning":"～のことになると","lesson":"52","ex":"","exJa":""},{"id":580,"word":"no matter what may ...","meaning":"たとえ何が...しようと","lesson":"52","ex":"","exJa":""},{"id":581,"word":"be at home with ～","meaning":"～に精通している、～をよく知っている","lesson":"53","ex":"","exJa":""},{"id":582,"word":"hit on ～","meaning":"～を思いつく","lesson":"53","ex":"","exJa":""},{"id":583,"word":"in a row","meaning":"一列に、連続して","lesson":"53","ex":"","exJa":""},{"id":584,"word":"quite a little ～","meaning":"かなり多量の～、かなりの～","lesson":"53","ex":"","exJa":""},{"id":585,"word":"in secret","meaning":"ひそかに、内緒で","lesson":"53","ex":"","exJa":""},{"id":586,"word":"set up ～","meaning":"～を設置する、～を設立する","lesson":"53","ex":"","exJa":""},{"id":587,"word":"break one's promise","meaning":"約束を破る","lesson":"53","ex":"","exJa":""},{"id":588,"word":"drop out of ～","meaning":"～から手を引く、～から脱落する","lesson":"53","ex":"","exJa":""},{"id":589,"word":"go blind","meaning":"失明する","lesson":"53","ex":"","exJa":""},{"id":590,"word":"regard A as B","meaning":"AをBとみなす","lesson":"53","ex":"","exJa":""},{"id":591,"word":"nothing short of ～","meaning":"～にほかならない","lesson":"54","ex":"","exJa":""},{"id":592,"word":"it takes 時間 for 人 to do","meaning":"～（人）が...するのに～（時間）かかる","lesson":"54","ex":"","exJa":""},{"id":593,"word":"～, where ...","meaning":"～そしてそこで...","lesson":"54","ex":"","exJa":""},{"id":594,"word":"as ～ as any","meaning":"何にも劣らず～","lesson":"54","ex":"","exJa":""},{"id":595,"word":"in the sense that ...","meaning":"...するという点で","lesson":"54","ex":"","exJa":""},{"id":596,"word":"go so far as to do","meaning":"...しさえする","lesson":"54","ex":"","exJa":""},{"id":597,"word":"set out (to do)","meaning":"...し始める、出発する","lesson":"54","ex":"","exJa":""},{"id":598,"word":"in oneself","meaning":"それ自体〔自身〕","lesson":"54","ex":"","exJa":""},{"id":599,"word":"at the sight of ～","meaning":"～を見て","lesson":"54","ex":"","exJa":""},{"id":600,"word":"nothing but ～","meaning":"～にすぎない、～だけ","lesson":"54,55","ex":"","exJa":""},{"id":601,"word":"get angry","meaning":"怒る、腹を立てる","lesson":"2","ex":"","exJa":""},{"id":602,"word":"keep ～ to oneself","meaning":"～を秘密にしておく","lesson":"2","ex":"","exJa":""},{"id":603,"word":"on (the) condition (that) ...","meaning":"...という条件で","lesson":"2","ex":"","exJa":""},{"id":604,"word":"make believe （...）","meaning":"（...の）ふりをする、（...を）装う","lesson":"2","ex":"","exJa":""},{"id":605,"word":"set in","meaning":"（悪天候・感染などが）始まる、長引く","lesson":"2","ex":"","exJa":""},{"id":606,"word":"in turn","meaning":"結果として、順番に、交替で","lesson":"2","ex":"","exJa":""},{"id":607,"word":"not so much A as B","meaning":"AというよりむしろB","lesson":"2","ex":"","exJa":""},{"id":608,"word":"as though 〔if〕 ...","meaning":"まるで...かのように","lesson":"2","ex":"","exJa":""},{"id":609,"word":"be on the verge 〔point〕 of ...ing","meaning":"今にも...しそうである","lesson":"2","ex":"","exJa":""},{"id":610,"word":"may as well do","meaning":"...する方がよい","lesson":"3","ex":"","exJa":""},{"id":611,"word":"look forward to ～","meaning":"～を楽しみにする、～を期待する","lesson":"3","ex":"","exJa":""},{"id":612,"word":"play a trick 〔joke〕 on ～","meaning":"～をからかう","lesson":"3","ex":"","exJa":""},{"id":613,"word":"keep ...ing","meaning":"...し続ける","lesson":"3","ex":"","exJa":""},{"id":614,"word":"go bad","meaning":"腐る","lesson":"3","ex":"","exJa":""},{"id":615,"word":"clear up ～","meaning":"～（疑問・誤解など）を解く、晴れる","lesson":"3","ex":"","exJa":""},{"id":616,"word":"be ignorant of ～","meaning":"～を知らない","lesson":"3","ex":"","exJa":""},{"id":617,"word":"speak of A as B","meaning":"AのことをBと言う","lesson":"3","ex":"","exJa":""},{"id":618,"word":"as to ～","meaning":"～に関して、～について（言うと）","lesson":"3","ex":"","exJa":""},{"id":619,"word":"make fun of ～","meaning":"～をからかう","lesson":"3","ex":"","exJa":""},{"id":620,"word":"in connection with ～","meaning":"～に関連して","lesson":"4","ex":"","exJa":""},{"id":621,"word":"be tired of ～","meaning":"～にうんざりしている","lesson":"4","ex":"","exJa":""},{"id":622,"word":"put up with ～","meaning":"～に耐える、～を我慢する","lesson":"4","ex":"","exJa":""},{"id":623,"word":"pull one's leg","meaning":"（冗談で）～をからかう","lesson":"4","ex":"","exJa":""},{"id":624,"word":"think little 〔nothing； poorly〕 of ～","meaning":"～を何とも思わない、～を軽んじる","lesson":"4","ex":"","exJa":""},{"id":625,"word":"lose one's temper","meaning":"腹を立てる、カッとなる","lesson":"4","ex":"","exJa":""},{"id":626,"word":"be said to have＋過去分詞","meaning":"...だったと言われている","lesson":"4","ex":"","exJa":""},{"id":627,"word":"be known for ～","meaning":"～で知られている","lesson":"4","ex":"","exJa":""},{"id":628,"word":"in all","meaning":"全部で、合計で","lesson":"4","ex":"","exJa":""},{"id":629,"word":"for 〔with〕 all ～","meaning":"～にもかかわらず","lesson":"5","ex":"","exJa":""},{"id":630,"word":"nothing less than ～","meaning":"～にほかならない","lesson":"5","ex":"","exJa":""},{"id":631,"word":"anything but ～","meaning":"まったく〔決して〕～ではない","lesson":"5","ex":"","exJa":""},{"id":632,"word":"on top of ～","meaning":"～に加えて","lesson":"5","ex":"","exJa":""},{"id":633,"word":"be peculiar to ～","meaning":"～に固有である、～に特有のものである","lesson":"5","ex":"","exJa":""},{"id":634,"word":"break down (～)","meaning":"～（食物）を消化する、故障する、崩壊する","lesson":"5","ex":"","exJa":""},{"id":635,"word":"see little〔much；nothing〕 of ～","meaning":"～にあまり会わない〔よく会う；まったく会わない〕","lesson":"5","ex":"","exJa":""},{"id":636,"word":"on end","meaning":"続けて、立て続けに","lesson":"5","ex":"","exJa":""},{"id":637,"word":"be addicted to ～","meaning":"～（薬など）に依存している、～の中毒で","lesson":"6","ex":"","exJa":""},{"id":638,"word":"cut back 〔down〕 (on) ～","meaning":"～を減らす、～を切り詰める","lesson":"6","ex":"","exJa":""},{"id":639,"word":"of one's own ...ing","meaning":"～自身で...した","lesson":"6","ex":"","exJa":""},{"id":640,"word":"if S should ...","meaning":"万一...なら〔でも〕","lesson":"6","ex":"","exJa":""},{"id":641,"word":"be native to ～","meaning":"（動植物が）～の原産である、～になじみがある","lesson":"6","ex":"","exJa":""},{"id":642,"word":"be known to ～","meaning":"～に知られている","lesson":"6","ex":"","exJa":""},{"id":643,"word":"by mistake","meaning":"間違って、誤って","lesson":"6","ex":"","exJa":""},{"id":644,"word":"be indispensable to 〔for〕 ～","meaning":"～にとって不可欠である","lesson":"6","ex":"","exJa":""},{"id":645,"word":"avail oneself of ～","meaning":"～（機会など）を利用する","lesson":"7","ex":"","exJa":""},{"id":646,"word":"at first","meaning":"最初は","lesson":"7","ex":"","exJa":""},{"id":647,"word":"push one's way","meaning":"押しのけて進む","lesson":"7","ex":"","exJa":""},{"id":648,"word":"in search of ～","meaning":"～を探して、～を求めて","lesson":"7","ex":"","exJa":""},{"id":649,"word":"be indifferent toward 〔to〕 ～","meaning":"～に無関心である","lesson":"7","ex":"","exJa":""},{"id":650,"word":"do away with ～","meaning":"～を捨てる、始末する、～を廃止する","lesson":"7","ex":"","exJa":""},{"id":651,"word":"in vain","meaning":"無駄に、効果なく","lesson":"7","ex":"","exJa":""},{"id":652,"word":"by way of ～","meaning":"～を通って、～経由で","lesson":"7","ex":"","exJa":""},{"id":653,"word":"thanks to ～","meaning":"～のおかげで","lesson":"7","ex":"","exJa":""},{"id":654,"word":"bring ～ to an end 〔a close〕","meaning":"～を終わらせる","lesson":"7","ex":"","exJa":""},{"id":655,"word":"with a view to ...ing","meaning":"...するために、...する目的で","lesson":"7","ex":"","exJa":""},{"id":656,"word":"apply to ～","meaning":"～に当てはまる","lesson":"8","ex":"","exJa":""},{"id":657,"word":"at one's disposal","meaning":"～の思うままに","lesson":"8","ex":"","exJa":""},{"id":658,"word":"for one thing ～ (, for another ...)","meaning":"（理由などを挙げて）1つには～（，また1つには...）","lesson":"8","ex":"","exJa":""},{"id":659,"word":"make friends with ～","meaning":"～と友達になる、～と親しくなる","lesson":"8","ex":"","exJa":""},{"id":660,"word":"adapt to ～","meaning":"～に適応する、～に順応する","lesson":"8","ex":"","exJa":""},{"id":661,"word":"to put it another way","meaning":"別の言い方をすれば","lesson":"8","ex":"","exJa":""},{"id":662,"word":"search for ～","meaning":"～を捜し求める","lesson":"8","ex":"","exJa":""},{"id":663,"word":"have (a) good command of ～","meaning":"～を使いこなせる、～（言語など）に堪能である","lesson":"8","ex":"","exJa":""},{"id":664,"word":"be preferable to ～","meaning":"～より望ましい","lesson":"9","ex":"","exJa":""},{"id":665,"word":"be acquainted with ～","meaning":"～を熟知して、～と知り合いである","lesson":"9","ex":"","exJa":""},{"id":666,"word":"look up ～ (in the dictionary)","meaning":"～を（辞書で）調べる","lesson":"9","ex":"","exJa":""},{"id":667,"word":"keep at ～","meaning":"～を根気よく続ける","lesson":"9","ex":"","exJa":""},{"id":668,"word":"make progress (in ～)","meaning":"（～において）進歩する〔進む〕","lesson":"9","ex":"","exJa":""},{"id":669,"word":"those who ...","meaning":"...する人々","lesson":"9","ex":"","exJa":""},{"id":670,"word":"not less than ～","meaning":"少なくとも～","lesson":"9","ex":"","exJa":""},{"id":671,"word":"it is said that ...","meaning":"...と言われている","lesson":"9","ex":"","exJa":""},{"id":672,"word":"now (that) ...","meaning":"今や...なので、...であるからには","lesson":"9","ex":"","exJa":""},{"id":673,"word":"shake hands (with ～)","meaning":"（～と）握手する","lesson":"10","ex":"","exJa":""},{"id":674,"word":"provide B for 〔to〕 A","meaning":"AにBを供給する、提供する","lesson":"10","ex":"","exJa":""},{"id":675,"word":"go in for ～","meaning":"（趣味などとして）～をし始める","lesson":"10","ex":"","exJa":""},{"id":676,"word":"be particular about 〔over〕 ～","meaning":"（好みなどに関して）～にうるさい","lesson":"10","ex":"","exJa":""},{"id":677,"word":"drop in (on 人 ; at 場所)","meaning":"（～に）立ち寄る","lesson":"10","ex":"","exJa":""},{"id":678,"word":"see off ～","meaning":"～を見送る","lesson":"10","ex":"","exJa":""},{"id":679,"word":"be senior to ～","meaning":"～より年上である","lesson":"10","ex":"","exJa":""},{"id":680,"word":"in succession","meaning":"連続して、次々と","lesson":"10","ex":"","exJa":""},{"id":681,"word":"put on airs","meaning":"気取る","lesson":"10","ex":"","exJa":""},{"id":682,"word":"all 〔just〕 the same","meaning":"それでもやはり","lesson":"10","ex":"","exJa":""},{"id":683,"word":"rule out ～","meaning":"～を除外する","lesson":"10","ex":"","exJa":""},{"id":684,"word":"take after ～","meaning":"～を追跡する、（人が）～に似ている","lesson":"11","ex":"","exJa":""},{"id":685,"word":"be reluctant to do","meaning":"...したがらない","lesson":"11","ex":"","exJa":""},{"id":686,"word":"exchange A for B","meaning":"AをBと交換する","lesson":"11","ex":"","exJa":""},{"id":687,"word":"look ～ in the eye 〔face〕","meaning":"～の目〔顔〕をまっすぐ見る、～を直視する","lesson":"11","ex":"","exJa":""},{"id":688,"word":"the time (～) when ...","meaning":"...する時","lesson":"11","ex":"","exJa":""},{"id":689,"word":"A is no less ～ than B is (...)","meaning":"Bが...であるのと同様にAは～である","lesson":"11","ex":"","exJa":""},{"id":690,"word":"lay off ～","meaning":"～を（一時）解雇する","lesson":"11","ex":"","exJa":""},{"id":691,"word":"on second thought(s)","meaning":"考え直して、やっぱり","lesson":"11","ex":"","exJa":""},{"id":692,"word":"kind〔sort〕 of","meaning":"いくぶん、ちょっと","lesson":"12","ex":"","exJa":""},{"id":693,"word":"take a break","meaning":"休憩する","lesson":"12","ex":"","exJa":""},{"id":694,"word":"between you and me","meaning":"内緒にして","lesson":"12","ex":"","exJa":""},{"id":695,"word":"regret to do","meaning":"残念ながら...する","lesson":"12","ex":"","exJa":""},{"id":696,"word":"need not have＋過去分詞","meaning":"...する必要がなかったのに","lesson":"12","ex":"","exJa":""},{"id":697,"word":"use up ～","meaning":"～を使い尽くす","lesson":"12","ex":"","exJa":""},{"id":698,"word":"seeing (that) ...","meaning":"...であるので","lesson":"12","ex":"","exJa":""},{"id":699,"word":"set about ～","meaning":"～を始める、～に取りかかる","lesson":"12","ex":"","exJa":""},{"id":700,"word":"make much of ～","meaning":"～を重視する、～をもてはやす","lesson":"12","ex":"","exJa":""},{"id":701,"word":"show off ～","meaning":"～を見せびらかす","lesson":"12","ex":"","exJa":""},{"id":702,"word":"go on ...ing 〔with ～〕","meaning":"...し〔～を〕続ける","lesson":"12","ex":"","exJa":""},{"id":703,"word":"turn down ～","meaning":"～を拒絶〔拒否〕する、～を断る","lesson":"13","ex":"","exJa":""},{"id":704,"word":"if anything","meaning":"どちらかと言えば、むしろ","lesson":"13","ex":"","exJa":""},{"id":705,"word":"boast about 〔of〕 ～","meaning":"～を自慢する、～を誇る","lesson":"13","ex":"","exJa":""},{"id":706,"word":"refrain from ～","meaning":"～を控える、～をやめる","lesson":"13","ex":"","exJa":""},{"id":707,"word":"suspect A of B","meaning":"AをBであるようだと疑う","lesson":"13","ex":"","exJa":""},{"id":708,"word":"die from ～","meaning":"～（が死因）で死ぬ","lesson":"13","ex":"","exJa":""},{"id":709,"word":"all along","meaning":"最初からずっと","lesson":"13","ex":"","exJa":""},{"id":710,"word":"by accident 〔chance〕","meaning":"たまたま、偶然","lesson":"13","ex":"","exJa":""},{"id":711,"word":"Who is it that ...?","meaning":"...するのはいったい誰か","lesson":"13","ex":"","exJa":""},{"id":712,"word":"accept A as B","meaning":"AをBとして認める、受け入れる","lesson":"14","ex":"","exJa":""},{"id":713,"word":"get in touch with ～","meaning":"～と連絡を取る","lesson":"14","ex":"","exJa":""},{"id":714,"word":"free of charge","meaning":"無料で","lesson":"14","ex":"","exJa":""},{"id":715,"word":"look to ～ (for ...)","meaning":"（...を求めるのに）～を頼みにする","lesson":"14","ex":"","exJa":""},{"id":716,"word":"ask a favor of ～","meaning":"～にお願いする〔頼む〕","lesson":"14","ex":"","exJa":""},{"id":717,"word":"pick up ～","meaning":"～を取り上げる、迎えに行く","lesson":"14","ex":"","exJa":""},{"id":718,"word":"be absent from ～","meaning":"～を欠席している","lesson":"14","ex":"","exJa":""},{"id":719,"word":"get along (with ～)","meaning":"（～と）うまくやっていく、暮らしていく","lesson":"14","ex":"","exJa":""},{"id":720,"word":"be intent on 〔upon〕 ～","meaning":"～に没頭している","lesson":"15","ex":"","exJa":""},{"id":721,"word":"behind the times","meaning":"時代遅れの","lesson":"15","ex":"","exJa":""},{"id":722,"word":"decide on 〔upon〕 ～","meaning":"～を選ぶ、～を決定する","lesson":"15","ex":"","exJa":""},{"id":723,"word":"stay away from ～","meaning":"～に近づかない、～を欠席する","lesson":"15","ex":"","exJa":""},{"id":724,"word":"in public","meaning":"人前で、公然と","lesson":"15","ex":"","exJa":""},{"id":725,"word":"let O do","meaning":"Ｏに...させる（使役動詞）","lesson":"15","ex":"","exJa":""},{"id":726,"word":"as ～ as＋数詞","meaning":"（...と同じほど）も～","lesson":"15","ex":"","exJa":""},{"id":727,"word":"at length","meaning":"詳細に、ついに","lesson":"15","ex":"","exJa":""},{"id":728,"word":"stand for ～","meaning":"～を表す、～を象徴する、～を支持する","lesson":"15","ex":"","exJa":""},{"id":729,"word":"consist in ～","meaning":"～にある、～に存在する","lesson":"15","ex":"","exJa":""},{"id":730,"word":"dozens of ～","meaning":"何十もの～、多数の～","lesson":"16","ex":"","exJa":""},{"id":731,"word":"in a word","meaning":"一言で言えば、要するに","lesson":"16","ex":"","exJa":""},{"id":732,"word":"under way","meaning":"進行中で","lesson":"16","ex":"","exJa":""},{"id":733,"word":"get to ～","meaning":"～に到着する","lesson":"16","ex":"","exJa":""},{"id":734,"word":"so to speak 〔say〕","meaning":"いわば、言ってみれば","lesson":"16","ex":"","exJa":""},{"id":735,"word":"make sense","meaning":"意味を成す、道理にかなう","lesson":"16","ex":"","exJa":""},{"id":736,"word":"define A as B","meaning":"AをBと定義する","lesson":"16","ex":"","exJa":""},{"id":737,"word":"out of fashion","meaning":"すたれた、流行遅れの","lesson":"16","ex":"","exJa":""},{"id":738,"word":"one ～, another ...","meaning":"1つは～，（もう）1つは...","lesson":"16","ex":"","exJa":""},{"id":739,"word":"cannot do too ～","meaning":"いくら～してもしすぎることはない","lesson":"16","ex":"","exJa":""},{"id":740,"word":"to begin 〔start〕 with","meaning":"まず、第一に","lesson":"17","ex":"","exJa":""},{"id":741,"word":"need 〔want〕 ...ing","meaning":"...される必要がある","lesson":"17","ex":"","exJa":""},{"id":742,"word":"no sooner ～ than ...","meaning":"～するとすぐ...する","lesson":"17","ex":"","exJa":""},{"id":743,"word":"keep one's word 〔promise〕","meaning":"約束を守る","lesson":"17","ex":"","exJa":""},{"id":744,"word":"forgive A for B","meaning":"Bに関してAを許す、大目に見る","lesson":"17","ex":"","exJa":""},{"id":745,"word":"present oneself","meaning":"出頭する、出席する","lesson":"17","ex":"","exJa":""},{"id":746,"word":"punish A for B","meaning":"Bを理由にAを罰する","lesson":"17","ex":"","exJa":""},{"id":747,"word":"make amends for ～","meaning":"～の償いをする、～の埋め合わせをする","lesson":"17","ex":"","exJa":""},{"id":748,"word":"submit to ～","meaning":"～に従う、～に屈服する","lesson":"17","ex":"","exJa":""},{"id":749,"word":"be worthy to do","meaning":"...するに値する〔ふさわしい〕","lesson":"18","ex":"","exJa":""},{"id":750,"word":"fail in ～","meaning":"～に失敗する、～を怠る","lesson":"18","ex":"","exJa":""},{"id":751,"word":"in effect","meaning":"実際は、事実上","lesson":"18","ex":"","exJa":""},{"id":752,"word":"rest on 〔upon〕 ～","meaning":"～に基づく、～に支えられている","lesson":"18","ex":"","exJa":""},{"id":753,"word":"bring ～ into being 〔existence〕","meaning":"～を生み出す、～（子）を産む","lesson":"18","ex":"","exJa":""},{"id":754,"word":"ask A for B","meaning":"AにBを求める","lesson":"18","ex":"","exJa":""},{"id":755,"word":"on 〔in〕 behalf of ～","meaning":"～の代理として、～のために","lesson":"18","ex":"","exJa":""},{"id":756,"word":"What if ...?","meaning":"...したらどうなるだろうか","lesson":"18","ex":"","exJa":""},{"id":757,"word":"the＋形容詞","meaning":"（形容詞）の人たち","lesson":"18","ex":"","exJa":""},{"id":758,"word":"for the first time","meaning":"初めて","lesson":"19","ex":"","exJa":""},{"id":759,"word":"make do with ～","meaning":"～で間に合わせる、～で済ませる","lesson":"19","ex":"","exJa":""},{"id":760,"word":"come close to ...ing","meaning":"...しそうになる、もう少しで...するところだ","lesson":"19","ex":"","exJa":""},{"id":761,"word":"come up with ～","meaning":"～を思いつく","lesson":"19","ex":"","exJa":""},{"id":762,"word":"with respect to ～","meaning":"～に関して","lesson":"19","ex":"","exJa":""},{"id":763,"word":"result in ～","meaning":"～という結果になる","lesson":"19","ex":"","exJa":""},{"id":764,"word":"in practice","meaning":"実際に（は）、実際上","lesson":"19","ex":"","exJa":""},{"id":765,"word":"for instance 〔example〕","meaning":"例えば","lesson":"19","ex":"","exJa":""},{"id":766,"word":"look down upon〔on〕 ～","meaning":"～を軽蔑する","lesson":"19","ex":"","exJa":""},{"id":767,"word":"take off (～)","meaning":"離陸する、～を脱ぐ、人気が出る","lesson":"19","ex":"","exJa":""},{"id":768,"word":"make use of ～","meaning":"～を活かす","lesson":"20","ex":"","exJa":""},{"id":769,"word":"make a difference","meaning":"重要である","lesson":"20","ex":"","exJa":""},{"id":770,"word":"in that ...","meaning":"...という点において、...だから","lesson":"20","ex":"","exJa":""},{"id":771,"word":"not all ～","meaning":"すべての～が...であるわけではない","lesson":"20","ex":"","exJa":""},{"id":772,"word":"whether to do","meaning":"...すべきかどうか","lesson":"20","ex":"","exJa":""},{"id":773,"word":"be confronted with 〔by〕 ～","meaning":"～に直面している","lesson":"20","ex":"","exJa":""},{"id":774,"word":"a couple of ～","meaning":"2，3の、いくつかの","lesson":"20","ex":"","exJa":""},{"id":775,"word":"figure out ～","meaning":"～を考え出す、～を理解する","lesson":"20","ex":"","exJa":""},{"id":776,"word":"up to date","meaning":"最新の、現代的な","lesson":"20","ex":"","exJa":""},{"id":777,"word":"be ready for ～","meaning":"～の準備ができている","lesson":"20","ex":"","exJa":""},{"id":778,"word":"in return for ～","meaning":"～のお返しに","lesson":"20","ex":"","exJa":""},{"id":779,"word":"differ from ～","meaning":"～と異なる","lesson":"21","ex":"","exJa":""},{"id":780,"word":"in fact 〔reality〕","meaning":"実は、実際には","lesson":"21","ex":"","exJa":""},{"id":781,"word":"focus on ～","meaning":"～に集中する、～に焦点を当てる","lesson":"21","ex":"","exJa":""},{"id":782,"word":"be famous for ～","meaning":"～で有名である","lesson":"21","ex":"","exJa":""},{"id":783,"word":"think highly of ～","meaning":"～を高く評価する、～を重視する","lesson":"21","ex":"","exJa":""},{"id":784,"word":"on schedule","meaning":"予定通りに","lesson":"21","ex":"","exJa":""},{"id":785,"word":"happen to do","meaning":"たまたま〔偶然〕...する","lesson":"21","ex":"","exJa":""},{"id":786,"word":"it is not until ～ that ...","meaning":"～して初めて...する","lesson":"21","ex":"","exJa":""},{"id":787,"word":"do nothing but do","meaning":"単に...するだけである","lesson":"21","ex":"","exJa":""},{"id":788,"word":"in exchange of 〔for〕 ～","meaning":"～と引き換えに、～の代わりに","lesson":"21","ex":"","exJa":""},{"id":789,"word":"feel for ～","meaning":"～に同情する","lesson":"22","ex":"","exJa":""},{"id":790,"word":"insist on 〔upon〕 ～","meaning":"～を主張する、～を言い張る","lesson":"22","ex":"","exJa":""},{"id":791,"word":"in principle","meaning":"原則として、原則的には","lesson":"22","ex":"","exJa":""},{"id":792,"word":"get away with ～","meaning":"～を罰を受けずにやってのける","lesson":"22","ex":"","exJa":""},{"id":793,"word":"look into ～","meaning":"～を調べる","lesson":"22","ex":"","exJa":""},{"id":794,"word":"be opposed to ～","meaning":"～に反対である","lesson":"22","ex":"","exJa":""},{"id":795,"word":"keep company with ～","meaning":"～と交際する","lesson":"22","ex":"","exJa":""},{"id":796,"word":"seat oneself","meaning":"座る、着席する","lesson":"22","ex":"","exJa":""},{"id":797,"word":"bring oneself to do","meaning":"...する気になる","lesson":"22","ex":"","exJa":""},{"id":798,"word":"catch sight of ～","meaning":"～を見かける、～を見つける","lesson":"22","ex":"","exJa":""},{"id":799,"word":"keep away from ～","meaning":"～から離れている、～に近づかない","lesson":"23","ex":"","exJa":""},{"id":800,"word":"live a life","meaning":"生活をする（同族目的語）","lesson":"23","ex":"","exJa":""},{"id":801,"word":"at best","meaning":"よくても、せいぜい","lesson":"23","ex":"","exJa":""},{"id":802,"word":"with ～ in mind","meaning":"～を考慮して","lesson":"23","ex":"","exJa":""},{"id":803,"word":"get down to ～","meaning":"～をし始める、本腰を入れて取り掛かる","lesson":"23","ex":"","exJa":""},{"id":804,"word":"in the meantime","meaning":"その間に、とかくするうちに","lesson":"23","ex":"","exJa":""},{"id":805,"word":"couldn't be better","meaning":"（気分・調子が）最高だ","lesson":"23","ex":"","exJa":""},{"id":806,"word":"if ever","meaning":"（たとえ）あるとしても、もし...だとしたら","lesson":"23","ex":"","exJa":""},{"id":807,"word":"A is to B what C is to D","meaning":"AとBの関係はCとDの関係に等しい","lesson":"24","ex":"","exJa":""},{"id":808,"word":"but for ～","meaning":"～がなければ〔～がなかったら〕","lesson":"24","ex":"","exJa":""},{"id":809,"word":"not ... either","meaning":"～も（また）...ない","lesson":"24","ex":"","exJa":""},{"id":810,"word":"where to do","meaning":"どこで〔に〕...すべきか","lesson":"24","ex":"","exJa":""},{"id":811,"word":"動詞＋過去分詞","meaning":"～されて...する（主格補語）","lesson":"24","ex":"","exJa":""},{"id":812,"word":"upon〔on〕＋名詞","meaning":"...すると（すぐ）","lesson":"24","ex":"","exJa":""},{"id":813,"word":"will be ...ing","meaning":"...しているだろう（未来進行形）","lesson":"24","ex":"","exJa":""},{"id":814,"word":"hardly ～ when 〔before〕 ...","meaning":"～するとすぐ...する","lesson":"24,25","ex":"","exJa":""},{"id":815,"word":"as 〔so〕 long as ...","meaning":"...する限り、...でさえあれば","lesson":"25","ex":"","exJa":""},{"id":816,"word":"for want 〔lack〕 of ～","meaning":"～の不足のため、～がないので","lesson":"25","ex":"","exJa":""},{"id":817,"word":"be apt to do","meaning":"...しがちだ、...する傾向にある","lesson":"25","ex":"","exJa":""},{"id":818,"word":"go bankrupt","meaning":"破産する","lesson":"25","ex":"","exJa":""},{"id":819,"word":"in the face of ～","meaning":"～に直面して、～にもかかわらず","lesson":"25","ex":"","exJa":""},{"id":820,"word":"consist of ～","meaning":"～から成る","lesson":"25","ex":"","exJa":""},{"id":821,"word":"as follows","meaning":"次の通り（で）","lesson":"25","ex":"","exJa":""},{"id":822,"word":"make (both) ends meet","meaning":"収支を合わせる、やり繰りする","lesson":"25","ex":"","exJa":""},{"id":823,"word":"make allowances for ～","meaning":"～を考慮して大目にみる、～を見込む","lesson":"25","ex":"","exJa":""},{"id":824,"word":"apply for ～","meaning":"～に申し込む、～に応募する","lesson":"26","ex":"","exJa":""},{"id":825,"word":"hope 〔wish〕 for ～","meaning":"～を望む","lesson":"26","ex":"","exJa":""},{"id":826,"word":"only too ～","meaning":"とても...、残念ながら...","lesson":"26","ex":"","exJa":""},{"id":827,"word":"in trouble","meaning":"困った、窮地に陥った","lesson":"26","ex":"","exJa":""},{"id":828,"word":"aim at ～","meaning":"～を目指す、～をねらう","lesson":"26","ex":"","exJa":""},{"id":829,"word":"be busy ...ing 〔with ～〕","meaning":"...するのに〔～に〕忙しい","lesson":"26","ex":"","exJa":""},{"id":830,"word":"If only ...","meaning":"...でありさえすればよいのに","lesson":"26","ex":"","exJa":""},{"id":831,"word":"out of (one's) control","meaning":"制御できなくて","lesson":"26","ex":"","exJa":""},{"id":832,"word":"in the air","meaning":"（噂などが）広まって、空中に","lesson":"26","ex":"","exJa":""},{"id":833,"word":"coincide with ～","meaning":"～と同時に起こる、～と一致する","lesson":"26,27","ex":"","exJa":""},{"id":834,"word":"blame A for B","meaning":"BをAのせいにする","lesson":"27","ex":"","exJa":""},{"id":835,"word":"on duty","meaning":"勤務中で、当直で","lesson":"27","ex":"","exJa":""},{"id":836,"word":"pass away","meaning":"亡くなる","lesson":"27","ex":"","exJa":""},{"id":837,"word":"go out of one's way to do","meaning":"わざわざ...する","lesson":"27","ex":"","exJa":""},{"id":838,"word":"live on 〔upon〕 ～","meaning":"～で生計を立てる、頼って生活する","lesson":"27","ex":"","exJa":""},{"id":839,"word":"run into 〔across〕 ～","meaning":"～に偶然出会う","lesson":"27","ex":"","exJa":""},{"id":840,"word":"go with ～","meaning":"～と同調する、～と調和する","lesson":"27","ex":"","exJa":""},{"id":841,"word":"try to do","meaning":"...しようとする、...しようと試みる","lesson":"27","ex":"","exJa":""},{"id":842,"word":"in accordance with ～","meaning":"～に従って、～通りに","lesson":"27","ex":"","exJa":""},{"id":843,"word":"～ of ...","meaning":"...という～（同格のof）","lesson":"28","ex":"","exJa":""},{"id":844,"word":"If it were not for ～","meaning":"もし～がないなら","lesson":"28","ex":"","exJa":""},{"id":845,"word":"forget to do","meaning":"...することを忘れる","lesson":"28","ex":"","exJa":""},{"id":846,"word":"for the purpose of ～","meaning":"～の目的で","lesson":"28","ex":"","exJa":""},{"id":847,"word":"at intervals","meaning":"間隔をおいて、時折","lesson":"28","ex":"","exJa":""},{"id":848,"word":"keep on ...ing","meaning":"...し続ける","lesson":"28","ex":"","exJa":""},{"id":849,"word":"as opposed to ～","meaning":"～とは対照的に","lesson":"28","ex":"","exJa":""},{"id":850,"word":"in preparation for ～","meaning":"～に備えて、～の準備で","lesson":"28","ex":"","exJa":""},{"id":851,"word":"go without ～","meaning":"～なしで済ませる、我慢する","lesson":"28","ex":"","exJa":""},{"id":852,"word":"feed on ～","meaning":"～を餌にする、～を常食にする","lesson":"29","ex":"","exJa":""},{"id":853,"word":"be about to do","meaning":"（まさに）...しようとしている","lesson":"29","ex":"","exJa":""},{"id":854,"word":"give birth to ～","meaning":"～を生む、～の原因となる","lesson":"29","ex":"","exJa":""},{"id":855,"word":"strictly speaking","meaning":"厳密に言うと","lesson":"29","ex":"","exJa":""},{"id":856,"word":"what we call","meaning":"いわゆる","lesson":"29","ex":"","exJa":""},{"id":857,"word":"take to ～","meaning":"～が気に入る、～を始める、～にふける","lesson":"29","ex":"","exJa":""},{"id":858,"word":"compare A with 〔to〕 B","meaning":"AをBと比較する、たとえる","lesson":"29","ex":"","exJa":""},{"id":859,"word":"settle down","meaning":"落ち着く、静まる","lesson":"29","ex":"","exJa":""},{"id":860,"word":"name A (B) after C","meaning":"CにちなんでAを（Bと）名づける","lesson":"29","ex":"","exJa":""},{"id":861,"word":"beyond doubt","meaning":"疑いの余地なく、明らかに","lesson":"30","ex":"","exJa":""},{"id":862,"word":"be subject to ～","meaning":"～に影響を受けやすい","lesson":"30","ex":"","exJa":""},{"id":863,"word":"what to do","meaning":"何を...すべきか","lesson":"30","ex":"","exJa":""},{"id":864,"word":"help O (to) do","meaning":"Ｏが...するのを助ける","lesson":"30","ex":"","exJa":""},{"id":865,"word":"How about ～?","meaning":"～はどうか","lesson":"30","ex":"","exJa":""},{"id":866,"word":"be being＋過去分詞","meaning":"...されている（進行形の受動態）","lesson":"30","ex":"","exJa":""},{"id":867,"word":"have only to do","meaning":"...しさえすればよい","lesson":"30","ex":"","exJa":""},{"id":868,"word":"take notes on ～","meaning":"～をメモする","lesson":"30","ex":"","exJa":""},{"id":869,"word":"of importance","meaning":"重要な","lesson":"30","ex":"","exJa":""},{"id":870,"word":"by hand","meaning":"（機械でなく）人の手で、手書きで","lesson":"30","ex":"","exJa":""},{"id":871,"word":"look back upon ～","meaning":"～を振り返る、～を回顧する","lesson":"31","ex":"","exJa":""},{"id":872,"word":"above all (else)","meaning":"何よりもまず、とりわけ","lesson":"31","ex":"","exJa":""},{"id":873,"word":"reflect upon 〔on〕 ～","meaning":"～についてよく考える","lesson":"31","ex":"","exJa":""},{"id":874,"word":"in other words","meaning":"言い換えれば、すなわち","lesson":"31","ex":"","exJa":""},{"id":875,"word":"attach A to B","meaning":"AをBに取り付ける","lesson":"31","ex":"","exJa":""},{"id":876,"word":"objectively speaking","meaning":"客観的に言えば","lesson":"31","ex":"","exJa":""},{"id":877,"word":"sum up ～","meaning":"～を要約する","lesson":"31","ex":"","exJa":""},{"id":878,"word":"be better off","meaning":"より良い状態である、...した方がよい","lesson":"31","ex":"","exJa":""},{"id":879,"word":"with＋O＋前置詞句","meaning":"...して（Ｏを～の状態で）","lesson":"31","ex":"","exJa":""},{"id":880,"word":"形容詞＋as S is","meaning":"...けれども","lesson":"32","ex":"","exJa":""},{"id":881,"word":"one ～, the other ...","meaning":"一方は～，もう一方〔残り〕は...","lesson":"32","ex":"","exJa":""},{"id":882,"word":"If S had 過去分詞, ...","meaning":"もし～だったら，...だっただろうに","lesson":"32","ex":"","exJa":""},{"id":883,"word":"be blessed with ～","meaning":"～に恵まれている","lesson":"32","ex":"","exJa":""},{"id":884,"word":"put emphasis on ～","meaning":"～に重点を置く","lesson":"32","ex":"","exJa":""},{"id":885,"word":"be〔become〕 keen on ～","meaning":"～に熱中している","lesson":"32","ex":"","exJa":""},{"id":886,"word":"instead of ～","meaning":"～の代わりに","lesson":"32","ex":"","exJa":""},{"id":887,"word":"in fashion","meaning":"流行の","lesson":"32","ex":"","exJa":""},{"id":888,"word":"(it is) no wonder (that) ...","meaning":"...なのも当然だ","lesson":"32","ex":"","exJa":""},{"id":889,"word":"a number of ～","meaning":"たくさんの～、いくつかの～","lesson":"33","ex":"","exJa":""},{"id":890,"word":"in the long run","meaning":"長い目で見れば、結局は","lesson":"33","ex":"","exJa":""},{"id":891,"word":"stick to ～","meaning":"～（主義・決定など）に固執する","lesson":"33","ex":"","exJa":""},{"id":892,"word":"have access to ～","meaning":"～を入手できる","lesson":"33","ex":"","exJa":""},{"id":893,"word":"due to ～","meaning":"～のために、～のせいで","lesson":"33","ex":"","exJa":""},{"id":894,"word":"have no choice but to do","meaning":"...するより仕方がない","lesson":"33","ex":"","exJa":""},{"id":895,"word":"frown at","meaning":"～に向かってまゆをひそめる","lesson":"33","ex":"","exJa":""},{"id":896,"word":"at first sight","meaning":"一見したところでは、一目で","lesson":"33,34","ex":"","exJa":""},{"id":897,"word":"the last to do","meaning":"決して...しない","lesson":"34","ex":"","exJa":""},{"id":898,"word":"forget ...ing","meaning":"...したことを忘れる","lesson":"34","ex":"","exJa":""},{"id":899,"word":"make up for ～","meaning":"～を補う、～の埋め合わせをする","lesson":"34","ex":"","exJa":""},{"id":900,"word":"all but ～","meaning":"ほとんど～、～以外全部","lesson":"34","ex":"","exJa":""},{"id":901,"word":"bring A home to B","meaning":"BにAを痛感させる","lesson":"34","ex":"","exJa":""},{"id":902,"word":"to some extent","meaning":"ある程度","lesson":"34","ex":"","exJa":""},{"id":903,"word":"resort to ～","meaning":"～に訴える、～に頼る","lesson":"34","ex":"","exJa":""},{"id":904,"word":"in view of ～","meaning":"～を考慮して","lesson":"34","ex":"","exJa":""},{"id":905,"word":"bring up ～","meaning":"～を育てる、～を話題に持ち出す","lesson":"34","ex":"","exJa":""},{"id":906,"word":"out of the way","meaning":"道を外れて","lesson":"34,35","ex":"","exJa":""},{"id":907,"word":"put ～ into practice","meaning":"～を実行に移す","lesson":"35","ex":"","exJa":""},{"id":908,"word":"at all costs","meaning":"どんな代償を払っても","lesson":"35","ex":"","exJa":""},{"id":909,"word":"out of the question","meaning":"問題外〔論外〕の、まったく不可能な","lesson":"35","ex":"","exJa":""},{"id":910,"word":"in ～","meaning":"～後に（期間）","lesson":"35","ex":"","exJa":""},{"id":911,"word":"not to speak of ～","meaning":"～は言うまでもなく","lesson":"35","ex":"","exJa":""},{"id":912,"word":"what with A and B","meaning":"AやらBやらで","lesson":"35","ex":"","exJa":""},{"id":913,"word":"all too ～","meaning":"あまりにも（...すぎる）","lesson":"35","ex":"","exJa":""},{"id":914,"word":"ascribe A to B","meaning":"Aの原因はBだと考える","lesson":"35","ex":"","exJa":""},{"id":915,"word":"identify A with B","meaning":"AとBを同一視する","lesson":"35,36","ex":"","exJa":""},{"id":916,"word":"hold true 〔good〕","meaning":"当てはまる、適用できる","lesson":"36","ex":"","exJa":""},{"id":917,"word":"to the point of ～","meaning":"～（程度・段階など）まで","lesson":"36","ex":"","exJa":""},{"id":918,"word":"correspond with ～","meaning":"～と一致する、～と文通する","lesson":"36","ex":"","exJa":""},{"id":919,"word":"take charge of ～","meaning":"～を管理〔担当〕する、～を預かる","lesson":"36","ex":"","exJa":""},{"id":920,"word":"let alone ～","meaning":"～は言うまでもなく、ましてや～","lesson":"36","ex":"","exJa":""},{"id":921,"word":"by and large","meaning":"概して、一般に","lesson":"36","ex":"","exJa":""},{"id":922,"word":"at work","meaning":"仕事中で、活動中で","lesson":"36","ex":"","exJa":""},{"id":923,"word":"fill in ～","meaning":"（必要事項を）～に書き込む","lesson":"36","ex":"","exJa":""},{"id":924,"word":"once for all","meaning":"これを最後に、きっぱりと","lesson":"36,37","ex":"","exJa":""},{"id":925,"word":"if any","meaning":"たとえあるにせよ、もしあれば","lesson":"37","ex":"","exJa":""},{"id":926,"word":"may well do","meaning":"...するのも当然だ","lesson":"37","ex":"","exJa":""},{"id":927,"word":"most of wh-","meaning":"～のほとんど","lesson":"37","ex":"","exJa":""},{"id":928,"word":"it is ～ wh- ...","meaning":"...かは～だ","lesson":"37","ex":"","exJa":""},{"id":929,"word":"early on","meaning":"早い段階で、初期に","lesson":"37","ex":"","exJa":""},{"id":930,"word":"in short","meaning":"要するに","lesson":"37","ex":"","exJa":""},{"id":931,"word":"translate A into B","meaning":"AをBに翻訳する","lesson":"37","ex":"","exJa":""},{"id":932,"word":"one after another","meaning":"次から次へと","lesson":"37","ex":"","exJa":""},{"id":933,"word":"be different from ～","meaning":"～と違っている","lesson":"37","ex":"","exJa":""},{"id":934,"word":"be unique to ～","meaning":"～に特有である","lesson":"37,38","ex":"","exJa":""},{"id":935,"word":"be engaged in ～","meaning":"～に従事している","lesson":"38","ex":"","exJa":""},{"id":936,"word":"one another","meaning":"お互い（に）","lesson":"38","ex":"","exJa":""},{"id":937,"word":"enjoy oneself","meaning":"楽しく過ごす","lesson":"38","ex":"","exJa":""},{"id":938,"word":"in order to do","meaning":"...するために","lesson":"38","ex":"","exJa":""},{"id":939,"word":"do ～ good","meaning":"～にとってよい","lesson":"38","ex":"","exJa":""},{"id":940,"word":"take part in ～","meaning":"～に参加する","lesson":"38","ex":"","exJa":""},{"id":941,"word":"later on","meaning":"あとで、あとになって","lesson":"38","ex":"","exJa":""},{"id":942,"word":"be worth ...ing","meaning":"...する価値がある","lesson":"38","ex":"","exJa":""},{"id":943,"word":"take place","meaning":"起こる、生じる","lesson":"38","ex":"","exJa":""},{"id":944,"word":"in person","meaning":"直接、自分で","lesson":"38","ex":"","exJa":""},{"id":945,"word":"substitute A for B","meaning":"Bの代わりにAを使う","lesson":"38,39","ex":"","exJa":""},{"id":946,"word":"as good as ～","meaning":"ほとんど～も同然","lesson":"39","ex":"","exJa":""},{"id":947,"word":"get on one's nerves","meaning":"～のかん〔神経〕に障る","lesson":"39","ex":"","exJa":""},{"id":948,"word":"make oneself understood","meaning":"自身を理解してもらう","lesson":"39","ex":"","exJa":""},{"id":949,"word":"have trouble ...ing","meaning":"～するのに苦労する","lesson":"39","ex":"","exJa":""},{"id":950,"word":"take advantage of ～","meaning":"～を利用する","lesson":"39","ex":"","exJa":""},{"id":951,"word":"turn 〔hand〕 in ～","meaning":"～を提出する","lesson":"39","ex":"","exJa":""},{"id":952,"word":"help ～ with ...","meaning":"～の...を手伝う","lesson":"39","ex":"","exJa":""},{"id":953,"word":"in demand","meaning":"需要のある","lesson":"39","ex":"","exJa":""},{"id":954,"word":"take on ～","meaning":"～を引き受ける、～を帯びる","lesson":"39","ex":"","exJa":""},{"id":955,"word":"in place of ～","meaning":"～の代わりに","lesson":"39,40","ex":"","exJa":""},{"id":956,"word":"in any case","meaning":"どんな場合でも、いずれにせよ","lesson":"40","ex":"","exJa":""},{"id":957,"word":"make the most of ～","meaning":"～を最大限に利用する","lesson":"40","ex":"","exJa":""},{"id":958,"word":"give ～ a try","meaning":"～を試してみる","lesson":"40","ex":"","exJa":""},{"id":959,"word":"比較級 and 比較級","meaning":"ますます～","lesson":"40","ex":"","exJa":""},{"id":960,"word":"judging from ～","meaning":"～から判断すると","lesson":"40","ex":"","exJa":""},{"id":961,"word":"go back to ～","meaning":"～へ戻る、～にさかのぼる","lesson":"40","ex":"","exJa":""},{"id":962,"word":"bring about ～","meaning":"～をもたらす、～を引き起こす","lesson":"40","ex":"","exJa":""},{"id":963,"word":"be made of ～","meaning":"～（材料）でできている","lesson":"40","ex":"","exJa":""},{"id":964,"word":"dispose of ～","meaning":"～を処理する","lesson":"40,41","ex":"","exJa":""},{"id":965,"word":"give away ～","meaning":"～を（ただで）やる、ばらす","lesson":"41","ex":"","exJa":""},{"id":966,"word":"for free","meaning":"無料で、ただで","lesson":"41","ex":"","exJa":""},{"id":967,"word":"in advance","meaning":"前もって","lesson":"41","ex":"","exJa":""},{"id":968,"word":"sympathize with ～","meaning":"～に同情する","lesson":"41","ex":"","exJa":""},{"id":969,"word":"～, which ...","meaning":"～そしてそれは...","lesson":"41","ex":"","exJa":""},{"id":970,"word":"used to do","meaning":"いつも...したものだ、以前は...だった","lesson":"41","ex":"","exJa":""},{"id":971,"word":"as ～ as ever","meaning":"相変わらず～","lesson":"41","ex":"","exJa":""},{"id":972,"word":"not ...ing","meaning":"...しない〔しなかった〕ので","lesson":"41","ex":"","exJa":""},{"id":973,"word":"hold A by the B","meaning":"AのBをつかむ","lesson":"41","ex":"","exJa":""},{"id":974,"word":"may have＋過去分詞","meaning":"...したかもしれない","lesson":"41,42","ex":"","exJa":""},{"id":975,"word":"count for ～","meaning":"～の価値がある、～ほどの重要性を持つ","lesson":"42","ex":"","exJa":""},{"id":976,"word":"no more than ～","meaning":"たった～、ほんの～","lesson":"42","ex":"","exJa":""},{"id":977,"word":"in haste","meaning":"急いで","lesson":"42","ex":"","exJa":""},{"id":978,"word":"at the cost of ～","meaning":"～を犠牲にして","lesson":"42","ex":"","exJa":""},{"id":979,"word":"care about ～","meaning":"～に関心がある、～を気にかける","lesson":"42","ex":"","exJa":""},{"id":980,"word":"specialize in ～","meaning":"～を専門に扱う、～を専攻する","lesson":"42","ex":"","exJa":""},{"id":981,"word":"make a choice","meaning":"選択する","lesson":"42","ex":"","exJa":""},{"id":982,"word":"(un)suitable for ～","meaning":"～に適した（適さない）","lesson":"42","ex":"","exJa":""},{"id":983,"word":"go on to do","meaning":"次に...する、続けて...する","lesson":"42,43","ex":"","exJa":""},{"id":984,"word":"on the spot","meaning":"その場で、即座に","lesson":"43","ex":"","exJa":""},{"id":985,"word":"with care","meaning":"注意して、気をつけて","lesson":"43","ex":"","exJa":""},{"id":986,"word":"will have＋過去分詞","meaning":"...してしまっているだろう","lesson":"43","ex":"","exJa":""},{"id":987,"word":"it seems that ...","meaning":"...のように見える","lesson":"43","ex":"","exJa":""},{"id":988,"word":"it is ～ for O to do","meaning":"Oが...するのは～","lesson":"43","ex":"","exJa":""},{"id":989,"word":"in order that ...","meaning":"...するために","lesson":"43","ex":"","exJa":""},{"id":990,"word":"for the sake of ～","meaning":"～のために","lesson":"43","ex":"","exJa":""},{"id":991,"word":"in pursuit of ～","meaning":"～を探し求めて、～を得ようとして","lesson":"43","ex":"","exJa":""},{"id":992,"word":"in store for ～","meaning":"～を待ち受けて、～に備えて","lesson":"43,44","ex":"","exJa":""},{"id":993,"word":"know ～ by heart","meaning":"～をそらで覚えている、～を暗記している","lesson":"44","ex":"","exJa":""},{"id":994,"word":"inquire into ～","meaning":"～を調べる","lesson":"44","ex":"","exJa":""},{"id":995,"word":"major in ～","meaning":"～を専攻する","lesson":"44","ex":"","exJa":""},{"id":996,"word":"enter into ～","meaning":"～を始める、～に取り掛かる","lesson":"44","ex":"","exJa":""},{"id":997,"word":"be ready to do","meaning":"...する用意ができている","lesson":"44","ex":"","exJa":""},{"id":998,"word":"keep pace with ～","meaning":"～に遅れをとらない、ついていく","lesson":"44","ex":"","exJa":""},{"id":999,"word":"fall behind","meaning":"後れをとる","lesson":"44,45","ex":"","exJa":""},{"id":1000,"word":"a handful of ～","meaning":"ひと握りの～、少数の～","lesson":"44,45","ex":"","exJa":""},{"id":1001,"word":"cope with ～","meaning":"～に対処する","lesson":"45","ex":"","exJa":""},{"id":1002,"word":"by no means","meaning":"決して～ない","lesson":"45","ex":"","exJa":""},{"id":1003,"word":"as a matter of fact","meaning":"実際のところ","lesson":"45","ex":"","exJa":""},{"id":1004,"word":"on the rise","meaning":"上昇中で、増加中で","lesson":"45","ex":"","exJa":""},{"id":1005,"word":"supply A with B","meaning":"AにBを供給する","lesson":"45","ex":"","exJa":""},{"id":1006,"word":"take ～ into account","meaning":"～を考慮に入れる","lesson":"45","ex":"","exJa":""},{"id":1007,"word":"be lacking in ～","meaning":"～が欠けている","lesson":"45","ex":"","exJa":""},{"id":1008,"word":"rob A of B","meaning":"AからBを強奪する","lesson":"45","ex":"","exJa":""},{"id":1009,"word":"be unwilling to do","meaning":"...したがらない","lesson":"45","ex":"","exJa":""},{"id":1010,"word":"share A with B","meaning":"AをBと共有する","lesson":"45,46","ex":"","exJa":""},{"id":1011,"word":"be consistent with ～","meaning":"～と一致する","lesson":"46","ex":"","exJa":""},{"id":1012,"word":"turn a deaf ear to ～","meaning":"～に耳を貸さない","lesson":"46","ex":"","exJa":""},{"id":1013,"word":"to make matters worse","meaning":"さらに悪いことには","lesson":"46","ex":"","exJa":""},{"id":1014,"word":"manage to do","meaning":"何とか〔どうにか〕...する","lesson":"46","ex":"","exJa":""},{"id":1015,"word":"as of ～","meaning":"～の時点で","lesson":"46","ex":"","exJa":""},{"id":1016,"word":"make up ～","meaning":"～を構成する、～をでっち上げる","lesson":"46","ex":"","exJa":""},{"id":1017,"word":"on the increase","meaning":"増加して","lesson":"46","ex":"","exJa":""},{"id":1018,"word":"be bound to do","meaning":"必ず...する、...する責任がある","lesson":"46","ex":"","exJa":""},{"id":1019,"word":"on occasion(s)","meaning":"時々","lesson":"46","ex":"","exJa":""},{"id":1020,"word":"for fear of ～","meaning":"～を恐れて、～のないように","lesson":"46,47","ex":"","exJa":""},{"id":1021,"word":"in danger of ～","meaning":"～の危険にさらされて","lesson":"47","ex":"","exJa":""},{"id":1022,"word":"have an impact on ～","meaning":"～に影響を及ぼす","lesson":"47","ex":"","exJa":""},{"id":1023,"word":"get lost","meaning":"消える、（道に）迷う、途方に暮れる","lesson":"47","ex":"","exJa":""},{"id":1024,"word":"be proud of ～","meaning":"～を誇りにする","lesson":"47","ex":"","exJa":""},{"id":1025,"word":"That is why ...","meaning":"そういうわけで...","lesson":"47","ex":"","exJa":""},{"id":1026,"word":"not to mention ～","meaning":"～は言うまでもなく","lesson":"47","ex":"","exJa":""},{"id":1027,"word":"～ enough to do","meaning":"...するのに十分～","lesson":"47","ex":"","exJa":""},{"id":1028,"word":"at the moment","meaning":"現在、今のところ","lesson":"47,48","ex":"","exJa":""},{"id":1029,"word":"as yet","meaning":"今のところ、現時点では","lesson":"48","ex":"","exJa":""},{"id":1030,"word":"run over ～","meaning":"～を考えてみる、（車が）～をひく","lesson":"48","ex":"","exJa":""},{"id":1031,"word":"be convinced that ...","meaning":"...であると確信している","lesson":"48","ex":"","exJa":""},{"id":1032,"word":"be equal to ～","meaning":"～に等しい、～をこなすことができる","lesson":"48","ex":"","exJa":""},{"id":1033,"word":"be forced to do","meaning":"...することを強いられる","lesson":"48","ex":"","exJa":""},{"id":1034,"word":"add to ～","meaning":"～を増やす","lesson":"48","ex":"","exJa":""},{"id":1035,"word":"it turns out that ...","meaning":"...だということが判明する","lesson":"48","ex":"","exJa":""},{"id":1036,"word":"keep track of ～","meaning":"～の動向を追う、～の記録をつける","lesson":"48,49","ex":"","exJa":""},{"id":1037,"word":"find out (about) ～","meaning":"～についてわかる、真相を知る","lesson":"49","ex":"","exJa":""},{"id":1038,"word":"call up ～","meaning":"～に電話をかける","lesson":"49","ex":"","exJa":""},{"id":1039,"word":"what＋名詞 ...","meaning":"...するすべての～","lesson":"49","ex":"","exJa":""},{"id":1040,"word":"more than＋数量","meaning":"～より多い","lesson":"49","ex":"","exJa":""},{"id":1041,"word":"be in love with ～","meaning":"～に恋している","lesson":"49","ex":"","exJa":""},{"id":1042,"word":"so far","meaning":"今のところ","lesson":"49","ex":"","exJa":""},{"id":1043,"word":"for oneself","meaning":"独力で","lesson":"49","ex":"","exJa":""},{"id":1044,"word":"live up to ～","meaning":"～（期待など）に添う","lesson":"49","ex":"","exJa":""},{"id":1045,"word":"put off ～","meaning":"～を嫌にさせる、～を延期する","lesson":"49","ex":"","exJa":""},{"id":1046,"word":"at stake","meaning":"危機に瀕して","lesson":"49","ex":"","exJa":""},{"id":1047,"word":"go about ～","meaning":"～（仕事・問題など）に取り組む","lesson":"49,50","ex":"","exJa":""},{"id":1048,"word":"compared to ～","meaning":"～と比べると","lesson":"50","ex":"","exJa":""},{"id":1049,"word":"think much of ～","meaning":"～を高く評価する、～を重んじる","lesson":"50","ex":"","exJa":""},{"id":1050,"word":"tell A apart","meaning":"Aを区別する","lesson":"50","ex":"","exJa":""},{"id":1051,"word":"set aside ～","meaning":"～を無視する、～を取っておく","lesson":"50","ex":"","exJa":""},{"id":1052,"word":"needless to say","meaning":"言うまでもなく","lesson":"50","ex":"","exJa":""},{"id":1053,"word":"when 〔while〕 ...","meaning":"...時〔間〕（省略形）","lesson":"50","ex":"","exJa":""},{"id":1054,"word":"it is not too much to say","meaning":"...と言っても過言ではない","lesson":"50","ex":"","exJa":""},{"id":1055,"word":"might as well ～ as ...","meaning":"...するくらいなら～する方がましだ","lesson":"50,51","ex":"","exJa":""},{"id":1056,"word":"fall in love with ～","meaning":"～に恋をする","lesson":"51","ex":"","exJa":""},{"id":1057,"word":"cheer up ～","meaning":"～を元気づける","lesson":"51","ex":"","exJa":""},{"id":1058,"word":"go through ～","meaning":"～を経験する、～を通過する","lesson":"51","ex":"","exJa":""},{"id":1059,"word":"interact with ～","meaning":"～と交流する","lesson":"51","ex":"","exJa":""},{"id":1060,"word":"in brief","meaning":"要するに","lesson":"51","ex":"","exJa":""},{"id":1061,"word":"furnish A with B","meaning":"AにBを与える、供給する","lesson":"51","ex":"","exJa":""},{"id":1062,"word":"provide for ～","meaning":"～に与える、～に備える","lesson":"51","ex":"","exJa":""},{"id":1063,"word":"be afraid of ～","meaning":"～を恐れている","lesson":"51","ex":"","exJa":""},{"id":1064,"word":"by means of ～","meaning":"～（の手段）によって","lesson":"51,52","ex":"","exJa":""},{"id":1065,"word":"give (人) a hand","meaning":"～(人)に手を貸す","lesson":"52","ex":"","exJa":""},{"id":1066,"word":"stand up","meaning":"立ち上がる、立っている","lesson":"52","ex":"","exJa":""},{"id":1067,"word":"ill at ease","meaning":"居心地が悪い、落ち着かない","lesson":"52","ex":"","exJa":""},{"id":1068,"word":"in any event","meaning":"いずれにせよ、とにかく","lesson":"52","ex":"","exJa":""},{"id":1069,"word":"in ...ing","meaning":"...する時に","lesson":"52","ex":"","exJa":""},{"id":1070,"word":"so ～ that ...","meaning":"大変～なので...","lesson":"52","ex":"","exJa":""},{"id":1071,"word":"count on ～","meaning":"～を当てにする、頼る","lesson":"52","ex":"","exJa":""},{"id":1072,"word":"dawn on ～","meaning":"～にとって次第にわかるようになる","lesson":"52","ex":"","exJa":""},{"id":1073,"word":"beat about the bush","meaning":"遠回しに言う","lesson":"52,53","ex":"","exJa":""},{"id":1074,"word":"make it","meaning":"うまくいく、間に合う","lesson":"53","ex":"","exJa":""},{"id":1075,"word":"contrary to ～","meaning":"～に反して","lesson":"53","ex":"","exJa":""},{"id":1076,"word":"independent of ～","meaning":"～に頼らない、～から独立した","lesson":"53","ex":"","exJa":""},{"id":1077,"word":"at once","meaning":"すぐに","lesson":"53","ex":"","exJa":""},{"id":1078,"word":"compensate for ～","meaning":"～を埋め合わせる、～を補償する","lesson":"53","ex":"","exJa":""},{"id":1079,"word":"appeal to A for B","meaning":"BのためにAに訴える","lesson":"53","ex":"","exJa":""},{"id":1080,"word":"much less ～","meaning":"まして～ない","lesson":"53","ex":"","exJa":""},{"id":1081,"word":"out of order","meaning":"故障して、順序がくるって","lesson":"53","ex":"","exJa":""},{"id":1082,"word":"stand by ～","meaning":"～の味方をする","lesson":"53,54","ex":"","exJa":""},{"id":1083,"word":"be suited to ～","meaning":"～に適した","lesson":"54","ex":"","exJa":""},{"id":1084,"word":"on ～","meaning":"～に（特定の日の朝・晩など）","lesson":"54","ex":"","exJa":""}];
+const WORD_BY_ID = {}; WORDS.forEach(w => WORD_BY_ID[w.id] = w);
+const TOTAL = WORDS.length;
+
+/* ============ CONSTANTS ============ */
+const INTERVALS = [0, 1, 2, 4, 8, 16, 32]; // days, index = box (0..6)
+const MASTER_BOX = 5;
+const DAY_MS = 86400000;
+
+let progress = {};   // id -> {box, due(ms), reps, lapses}
+let settings = { dailyNew: 20, sessionSize: 20 };
+let stats = { history: {}, streak: 0, lastDate: null, newToday: { date: null, count: 0 }, totalReviews: 0 };
+
+let route = 'home';
+let session = null; // {queue:[ids], pos, mode, correct:0, total:0, revealed:false, wrongIds:Set, quizChoices:[]}
+let rangeStartVal = 1;
+let rangeEndVal = 100;
+let bookChunkStart = 1;
+let bookChunkEnd = 100;
+let bookPageIndex = 0;
+const BOOK_PAGE_SIZE = 8;
+const BOOK_CHUNK_SIZE = 100;
+const MAX_ID = WORDS[WORDS.length - 1].id;
+
+/* ============ STORAGE ============ */
+/* localStorage: 保存はこの端末・このブラウザ内のみ。他の端末とは同期されません。 */
+async function loadAll(){
+  try { const v = localStorage.getItem('idiom:progress'); if (v) progress = JSON.parse(v); } catch(e){}
+  try { const v = localStorage.getItem('idiom:settings'); if (v) settings = Object.assign(settings, JSON.parse(v)); } catch(e){}
+  try { const v = localStorage.getItem('idiom:stats'); if (v) stats = Object.assign(stats, JSON.parse(v)); } catch(e){}
+}
+async function saveProgress(){ try{ localStorage.setItem('idiom:progress', JSON.stringify(progress)); }catch(e){ console.error(e); } }
+async function saveSettings(){ try{ localStorage.setItem('idiom:settings', JSON.stringify(settings)); }catch(e){ console.error(e); } }
+async function saveStats(){ try{ localStorage.setItem('idiom:stats', JSON.stringify(stats)); }catch(e){ console.error(e); } }
+
+function todayStr(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+function registerActivity(){
+  const t = todayStr();
+  if (stats.lastDate === t) { /* already counted today */ }
+  else if (stats.lastDate && (new Date(t) - new Date(stats.lastDate)) === DAY_MS) { stats.streak += 1; stats.lastDate = t; }
+  else { stats.streak = 1; stats.lastDate = t; }
+  stats.history[t] = (stats.history[t] || 0) + 1;
+  if (stats.newToday.date !== t) stats.newToday = { date: t, count: 0 };
+}
+
+/* ============ SRS LOGIC ============ */
+function dueReviewIds(){
+  const now = Date.now();
+  return Object.keys(progress).filter(id => progress[id].due <= now).map(Number);
+}
+function newRemainingToday(){
+  const t = todayStr();
+  const usedToday = (stats.newToday.date === t) ? stats.newToday.count : 0;
+  return Math.max(0, settings.dailyNew - usedToday);
+}
+function unseenIds(limit){
+  const out = [];
+  for (const w of WORDS){
+    if (!progress[w.id]) { out.push(w.id); if (out.length >= limit) break; }
+  }
+  return out;
+}
+function masteredCount(){
+  return Object.values(progress).filter(p => p.box >= MASTER_BOX).length;
+}
+function shuffle(arr){
+  for (let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function buildQueue(size){
+  const due = dueReviewIds();
+  const newBudget = Math.min(newRemainingToday(), Math.max(0, size - due.length));
+  const fresh = unseenIds(newBudget);
+  let pool = shuffle(due.slice(0, size)).concat(fresh);
+  pool = shuffle(pool);
+  return pool.slice(0, Math.max(size, pool.length > size ? size : pool.length));
+}
+
+function grade(id, result){
+  // result: 'again' | 'good' | 'easy'
+  let p = progress[id];
+  const isNew = !p;
+  if (!p) { p = { box: 0, due: Date.now(), reps: 0, lapses: 0, correct: 0, wrong: 0 }; progress[id] = p; }
+  if (p.correct === undefined) p.correct = 0;
+  if (p.wrong === undefined) p.wrong = 0;
+  p.reps += 1;
+  if (result === 'again'){
+    p.box = 0; p.lapses += 1; p.due = Date.now();
+    p.wrong += 1;
+  } else if (result === 'good'){
+    p.box = Math.min(6, p.box + 1);
+    p.due = Date.now() + INTERVALS[p.box] * DAY_MS;
+    p.correct += 1;
+  } else if (result === 'easy'){
+    p.box = Math.min(6, p.box + 2);
+    p.due = Date.now() + Math.round(INTERVALS[p.box] * 1.3) * DAY_MS;
+    p.correct += 1;
+  }
+  if (isNew){
+    const t = todayStr();
+    if (stats.newToday.date !== t) stats.newToday = { date: t, count: 0 };
+    stats.newToday.count += 1;
+  }
+  registerActivity();
+  stats.totalReviews += 1;
+  saveProgress(); saveStats();
+}
+
+/* ============ RENDER HELPERS ============ */
+function el(tag, cls, html){ const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
+function boxLabel(box){
+  if (box === undefined) return '未学習';
+  if (box === 0) return '学習中';
+  if (box <= 2) return '復習1';
+  if (box <= 4) return '復習2';
+  return '定着済';
+}
+function boxClass(box){
+  if (box === undefined || box === 0) return 'bb0';
+  if (box <= 2) return 'bb1';
+  if (box <= 4) return 'bb2';
+  return 'bb3';
+}
+function accuracyText(p){
+  const c = p.correct || 0, w = p.wrong || 0, total = c + w;
+  const pct = total ? Math.round((c / total) * 100) : 0;
+  return '正' + c + '・誤' + w + '（' + pct + '%）';
+}
+
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  app.appendChild(renderBrand());
+  if (route === 'home') app.appendChild(renderHome());
+  else if (route === 'list') app.appendChild(renderList());
+  else if (route === 'booktoc') app.appendChild(renderBookToc());
+  else if (route === 'bookpage') app.appendChild(renderBookPage());
+  else if (route === 'session') app.appendChild(renderSession());
+  else if (route === 'end') app.appendChild(renderEnd());
+}
+
+function renderBrand(){
+  const wrap = el('div');
+  const brand = el('div','brand');
+  const left = el('div');
+  left.appendChild(el('h1','','速読英熟語<span style="color:var(--shu)">熟語帳</span>'));
+  left.appendChild(el('div','sub','速読英熟語［改訂版］熟語・構文一覧・全' + TOTAL + '語'));
+  brand.appendChild(left);
+  brand.appendChild(el('div','sub', ''));
+  wrap.appendChild(brand);
+
+  if (route !== 'session' && route !== 'end'){
+    const nav = el('div','navrow');
+    const homeBtn = el('button','navbtn' + (route==='home' ? ' active':''), 'ホーム');
+    homeBtn.onclick = () => { route='home'; render(); };
+    const listBtn = el('button','navbtn' + (route==='list' ? ' active':''), '単語リスト');
+    listBtn.onclick = () => { route='list'; render(); };
+    const bookBtn = el('button','navbtn' + ((route==='booktoc'||route==='bookpage') ? ' active':''), '熟語帳');
+    bookBtn.onclick = () => { route='booktoc'; render(); };
+    const setBtn = el('button','navbtn','設定');
+    setBtn.onclick = () => openSettings();
+    nav.appendChild(homeBtn); nav.appendChild(listBtn); nav.appendChild(bookBtn); nav.appendChild(setBtn);
+    wrap.appendChild(nav);
+  }
+  return wrap;
+}
+
+function renderHome(){
+  const frag = document.createDocumentFragment();
+  const wrap = el('div');
+
+  const due = dueReviewIds().length;
+  const newLeft = newRemainingToday();
+  const mastered = masteredCount();
+
+  const grid = el('div','stat-grid');
+  grid.appendChild(statCard(due, '本日の復習', false));
+  grid.appendChild(statCard(newLeft, '本日の新規枠', false));
+  grid.appendChild(statCard(mastered + ' / ' + TOTAL, '定着済み単語', false));
+  grid.appendChild(statCard(stats.streak, '連続学習日数', true));
+  wrap.appendChild(grid);
+
+  wrap.appendChild(el('div','section-title','学習をはじめる'));
+
+  const readyCount = due + Math.min(newLeft, Math.max(0, unseenCountCached()));
+  if (readyCount === 0){
+    const note = el('div','empty-note','本日の学習ノルマは達成済みです。設定から新規枠を増やすか、また明日。');
+    wrap.appendChild(note);
+  }
+
+  wrap.appendChild(modeCard('めくって覚える', '熟語・構文を見て意味を思い出す → めくって確認 → 自己採点（想起練習）', 'flip'));
+  wrap.appendChild(modeCard('4択テスト', '意味を4択の中から選ぶ再認テスト。フラッシュカードと組み合わせて記憶を強化', 'quiz'));
+
+  wrap.appendChild(el('div','section-title','範囲を指定して学習'));
+  wrap.appendChild(renderRangeCard());
+
+  wrap.appendChild(el('div','section-title','このアプリの仕組み'));
+  const info = el('div','mode-card');
+  info.style.display = 'block';
+  info.innerHTML = '<div class="m-desc">' +
+    '① <b>間隔反復（Leitner式）</b>：正解した単語ほど次の出題間隔が延び、忘れかけた頃に再登場します。<br>' +
+    '② <b>想起練習</b>：意味を見る前に自分で思い出すことで記憶定着率が高まります（テスト効果）。<br>' +
+    '③ <b>新規語数を制限</b>：1日に詰め込みすぎず、復習を優先することで長期記憶に残します。<br><br>' +
+    '※ 学習データはこの端末・このブラウザ内にのみ保存されます。別の端末やブラウザで開くと、成績は別々になります。' +
+    '</div>';
+  wrap.appendChild(info);
+
+  frag.appendChild(wrap);
+  return frag;
+}
+
+let _unseenCache = null;
+function unseenCountCached(){
+  if (_unseenCache === null){
+    let c = 0; for (const w of WORDS) if (!progress[w.id]) c++;
+    _unseenCache = c;
+  }
+  return _unseenCache;
+}
+
+function statCard(num, label, streak){
+  const c = el('div','stat-card' + (streak ? ' streak':''));
+  c.appendChild(el('div','num', String(num)));
+  c.appendChild(el('div','label', label));
+  return c;
+}
+
+function modeCard(title, desc, mode){
+  const c = el('div','mode-card');
+  const left = el('div');
+  left.appendChild(el('div','m-title', title));
+  left.appendChild(el('div','m-desc', desc));
+  c.appendChild(left);
+  const btn = el('button','btn btn-primary','開始');
+  btn.onclick = () => startSession(mode);
+  c.appendChild(btn);
+  return c;
+}
+
+function renderRangeCard(){
+  const c = el('div','mode-card range-card');
+  c.style.flexDirection = 'column';
+  c.style.alignItems = 'stretch';
+  c.style.gap = '12px';
+
+  const desc = el('div','m-desc','No.を指定して、その範囲だけを学習します（例: 100〜400）。日々のノルマとは別に、テスト範囲の集中復習などに便利です。');
+  c.appendChild(desc);
+
+  const inputRow = el('div');
+  inputRow.style.display = 'flex';
+  inputRow.style.alignItems = 'center';
+  inputRow.style.gap = '8px';
+
+  const startInput = document.createElement('input');
+  startInput.type = 'number'; startInput.min = 1; startInput.max = 2300; startInput.value = rangeStartVal;
+  startInput.className = 'range-input';
+
+  const tilde = el('span','','〜');
+  tilde.style.color = 'var(--ink-soft)';
+
+  const endInput = document.createElement('input');
+  endInput.type = 'number'; endInput.min = 1; endInput.max = 2300; endInput.value = rangeEndVal;
+  endInput.className = 'range-input';
+
+  const label = el('span','','No.');
+  label.style.cssText = 'font-size:12px;color:var(--ink-soft);margin-left:2px;';
+
+  startInput.oninput = () => { rangeStartVal = Number(startInput.value) || 1; };
+  endInput.oninput = () => { rangeEndVal = Number(endInput.value) || 1; };
+
+  inputRow.appendChild(startInput); inputRow.appendChild(tilde); inputRow.appendChild(endInput); inputRow.appendChild(label);
+  c.appendChild(inputRow);
+
+  const countNote = el('div','m-desc','');
+  const updateCount = () => {
+    const s = Math.max(1, Math.min(rangeStartVal, rangeEndVal));
+    const e = Math.min(2300, Math.max(rangeStartVal, rangeEndVal));
+    const inRange = WORDS.filter(w => w.id >= s && w.id <= e);
+    const n = inRange.length;
+    const remaining = inRange.filter(w => !progress[w.id] || progress[w.id].box < MASTER_BOX).length;
+    countNote.innerHTML = '対象: ' + n + '語　<b style="color:var(--shu)">未定着: ' + remaining + '語</b>';
+  };
+  updateCount();
+  startInput.addEventListener('input', updateCount);
+  endInput.addEventListener('input', updateCount);
+  c.appendChild(countNote);
+
+  const checkRow = el('label','range-check');
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox'; checkbox.id = 'unmasteredOnly';
+  checkRow.appendChild(checkbox);
+  checkRow.appendChild(document.createTextNode(' 未定着の単語のみ出題する'));
+  c.appendChild(checkRow);
+
+  const btnRow = el('div');
+  btnRow.style.display = 'flex'; btnRow.style.gap = '8px'; btnRow.style.flexWrap = 'wrap';
+  const flipBtn = el('button','btn btn-outline','めくって覚える');
+  flipBtn.onclick = () => startRangeSession('flip', checkbox.checked);
+  const quizBtn = el('button','btn btn-primary','4択テスト');
+  quizBtn.onclick = () => startRangeSession('quiz', checkbox.checked);
+  btnRow.appendChild(flipBtn); btnRow.appendChild(quizBtn);
+  c.appendChild(btnRow);
+
+  return c;
+}
+
+function startSession(mode){
+  _unseenCache = null;
+  const size = settings.sessionSize;
+  const queue = buildQueue(size);
+  if (queue.length === 0){ alert('現在、出題できる単語がありません。設定から新規枠を増やしてください。'); return; }
+  beginSession(queue, mode);
+}
+
+function startRangeSession(mode, unmasteredOnly){
+  const startId = Math.max(1, Math.min(rangeStartVal, rangeEndVal));
+  const endId = Math.min(2300, Math.max(rangeStartVal, rangeEndVal));
+  let pool = WORDS.filter(w => w.id >= startId && w.id <= endId);
+  if (unmasteredOnly) pool = pool.filter(w => !progress[w.id] || progress[w.id].box < MASTER_BOX);
+  const ids = shuffle(pool.map(w => w.id));
+  if (ids.length === 0){
+    alert(unmasteredOnly ? 'この範囲はすべて定着済みです。' : '指定した範囲に単語が見つかりません。番号を確認してください。');
+    return;
+  }
+  beginSession(ids, mode);
+}
+
+function startRetrySession(){
+  if (!session || !session.wrongIds || session.wrongIds.size === 0) return;
+  const ids = shuffle(Array.from(session.wrongIds));
+  const mode = session.mode;
+  beginSession(ids, mode);
+}
+
+function beginSession(ids, mode){
+  _unseenCache = null;
+  session = { queue: ids.slice(), pos: 0, mode, correct: 0, total: 0, revealed: false, wrongIds: new Set(), startCount: ids.length };
+  route = 'session';
+  render();
+}
+
+function currentSessionWord(){
+  if (!session) return null;
+  if (session.pos >= session.queue.length) return null;
+  return WORD_BY_ID[session.queue[session.pos]];
+}
+
+function renderSession(){
+  const w = currentSessionWord();
+  if (!w){ route = 'end'; return renderEnd(); }
+  const frag = document.createDocumentFragment();
+
+  const meta = el('div','session-meta');
+  const leftSpan = el('span','','No.' + w.id);
+  const remaining = session.queue.length - session.pos;
+  const rightSpan = el('span','', Math.min(session.pos+1, session.startCount) + ' / ' + session.startCount + '　残り' + remaining + '問  ');
+  const exitLink = document.createElement('a');
+  exitLink.href = 'javascript:void(0)';
+  exitLink.textContent = '中断';
+  exitLink.style.cssText = 'color:var(--ink-soft);text-decoration:underline;margin-left:8px;font-family:\'Zen Kaku Gothic New\';';
+  exitLink.onclick = () => { if (confirm('学習を中断してホームへ戻りますか？')) { session = null; route = 'home'; render(); } };
+  rightSpan.appendChild(exitLink);
+  meta.appendChild(leftSpan); meta.appendChild(rightSpan);
+  frag.appendChild(meta);
+
+  const bar = el('div','progressbar');
+  const fill = el('div','progressbar-fill');
+  fill.style.width = Math.round((session.pos / session.queue.length) * 100) + '%';
+  bar.appendChild(fill);
+  frag.appendChild(bar);
+
+  const stage = el('div','card-stage');
+
+  if (session.mode === 'flip'){
+    const card = el('div','flashcard');
+    const p = progress[w.id];
+    card.appendChild(el('div','boxtag', boxLabel(p ? p.box : undefined)));
+    card.appendChild(el('div','idtag', '#' + w.id));
+    card.appendChild(el('div','word-en', w.word));
+
+    if (!session.revealed){
+      card.appendChild(el('div','word-hint','意味を思い出してからタップ'));
+      card.appendChild(el('div','tap-hint','タップして答えを見る'));
+      card.onclick = () => { session.revealed = true; render(); };
+    } else {
+      card.appendChild(el('div','meaning', w.meaning));
+      if (p && p.box >= MASTER_BOX){
+        const stamp = el('div','stamp','済');
+        card.appendChild(stamp);
+      }
+    }
+    stage.appendChild(card);
+    frag.appendChild(stage);
+
+    if (session.revealed){
+      const row = el('div','grade-row');
+      row.appendChild(gradeBtn('もう一度','1', 'grade-again', () => answer(w.id,'again')));
+      row.appendChild(gradeBtn('できた','2', 'grade-good', () => answer(w.id,'good')));
+      row.appendChild(gradeBtn('簡単','3', 'grade-easy', () => answer(w.id,'easy')));
+      frag.appendChild(row);
+    }
+  } else {
+    // quiz mode
+    if (!session.quizChoices || session.quizWordId !== w.id){
+      session.quizWordId = w.id;
+      session.quizChoices = buildChoices(w);
+      session.quizAnswered = false;
+    }
+    const card = el('div','flashcard');
+    card.style.cursor = 'default';
+    const p = progress[w.id];
+    card.appendChild(el('div','boxtag', boxLabel(p ? p.box : undefined)));
+    card.appendChild(el('div','idtag', '#' + w.id));
+    card.appendChild(el('div','word-en', w.word));
+    card.appendChild(el('div','word-hint','正しい意味を選んでください'));
+    stage.appendChild(card);
+    frag.appendChild(stage);
+
+    const choices = el('div','quiz-choices');
+    session.quizChoices.forEach(c => {
+      const b = el('button','choice-btn', c.meaning);
+      b.disabled = !!session.quizAnswered;
+      if (session.quizAnswered){
+        if (c.id === w.id) b.classList.add('correct');
+        else if (c.id === session.quizPicked) b.classList.add('wrong');
+      }
+      b.onclick = () => {
+        if (session.quizAnswered) return;
+        session.quizAnswered = true;
+        session.quizPicked = c.id;
+        const correct = (c.id === w.id);
+        answer(w.id, correct ? 'good' : 'again', true);
+      };
+      choices.appendChild(b);
+    });
+    frag.appendChild(choices);
+  }
+
+  return frag;
+}
+
+function gradeBtn(label, key, cls, fn){
+  const b = el('button','grade-btn ' + cls);
+  b.innerHTML = label + '<span class="k">' + key + '</span>';
+  b.onclick = fn;
+  return b;
+}
+
+function buildChoices(w){
+  const others = [];
+  while (others.length < 3){
+    const rnd = WORDS[Math.floor(Math.random() * WORDS.length)];
+    if (rnd.id !== w.id && !others.find(o => o.id === rnd.id)) others.push(rnd);
+  }
+  return shuffle([{ id: w.id, meaning: w.meaning }, ...others.map(o => ({ id: o.id, meaning: o.meaning }))]);
+}
+
+function answer(id, result, isQuiz){
+  session.total += 1;
+  if (result !== 'again') session.correct += 1;
+  else session.wrongIds.add(id);
+  grade(id, result);
+
+  if (isQuiz){
+    setTimeout(() => { advanceSession(id, result); }, 850);
+    render();
+    return;
+  }
+  advanceSession(id, result);
+}
+
+function advanceSession(id, result){
+  session.revealed = false;
+  session.quizChoices = null;
+  if (result === 'again'){
+    // requeue a few cards later for immediate re-drill
+    const insertAt = Math.min(session.queue.length, session.pos + 4);
+    session.queue.splice(insertAt, 0, id);
+  }
+  session.pos += 1;
+  render();
+}
+
+function renderEnd(){
+  const frag = document.createDocumentFragment();
+  const wrap = el('div','end-wrap');
+  wrap.appendChild(el('div','end-stamp','了'));
+  wrap.appendChild(el('div','end-title','本日の学習、完了'));
+  wrap.appendChild(el('div','end-sub', session ? (session.total + '問に取り組みました') : ''));
+
+  const statsRow = el('div','end-stats');
+  const acc = session && session.total ? Math.round((session.correct / session.total) * 100) : 0;
+  statsRow.appendChild(endStat(session ? session.correct : 0, '正解'));
+  statsRow.appendChild(endStat(acc + '%', '正答率'));
+  statsRow.appendChild(endStat(stats.streak, '連続日数'));
+  wrap.appendChild(statsRow);
+
+  const btnRow = el('div');
+  btnRow.style.display = 'flex'; btnRow.style.gap = '10px'; btnRow.style.justifyContent = 'center'; btnRow.style.flexWrap = 'wrap';
+
+  if (session && session.wrongIds && session.wrongIds.size > 0){
+    const retryBtn = el('button','btn btn-shu','間違えた単語だけ復習する（' + session.wrongIds.size + '語）');
+    retryBtn.onclick = () => startRetrySession();
+    btnRow.appendChild(retryBtn);
+  }
+
+  const btn = el('button','btn btn-outline','ホームへ戻る');
+  btn.onclick = () => { session = null; route = 'home'; render(); };
+  btnRow.appendChild(btn);
+  wrap.appendChild(btnRow);
+
+  frag.appendChild(wrap);
+  return frag;
+}
+function endStat(num, label){
+  const d = el('div');
+  d.appendChild(el('div','num', String(num)));
+  d.appendChild(el('div','lb', label));
+  return d;
+}
+
+function renderList(){
+  const frag = document.createDocumentFragment();
+  const bar = el('div','search-bar');
+  const input = document.createElement('input');
+  input.type = 'text'; input.placeholder = '単語または意味で検索…';
+  bar.appendChild(input);
+  frag.appendChild(bar);
+
+  const listWrap = el('div');
+  frag.appendChild(listWrap);
+
+  function renderRows(query){
+    listWrap.innerHTML = '';
+    const q = (query || '').trim().toLowerCase();
+    let count = 0;
+    for (const w of WORDS){
+      if (q && !(w.word.toLowerCase().includes(q) || w.meaning.includes(q))) continue;
+      const p = progress[w.id];
+      const row = el('div','word-row');
+      row.appendChild(el('div','w', w.word));
+      row.appendChild(el('div','mn', w.meaning));
+      row.appendChild(el('span','boxbadge ' + boxClass(p ? p.box : undefined), boxLabel(p ? p.box : undefined)));
+      if (p && (p.correct || p.wrong)) row.appendChild(el('span','accbadge', accuracyText(p)));
+      listWrap.appendChild(row);
+      count++;
+      if (count >= 150) break;
+    }
+    if (count === 0) listWrap.appendChild(el('div','empty-note','該当する単語が見つかりません'));
+    else if (count >= 150) listWrap.appendChild(el('div','empty-note','最初の150件を表示中。検索で絞り込んでください。'));
+  }
+  renderRows('');
+  input.oninput = () => renderRows(input.value);
+
+  return frag;
+}
+
+/* ============ WORD BOOK (TOC + paginated pages with examples) ============ */
+function renderBookToc(){
+  const frag = document.createDocumentFragment();
+  frag.appendChild(el('div','section-title','目次（100語単位）'));
+  const grid = el('div','toc-grid');
+  for (let start = 1; start <= MAX_ID; start += BOOK_CHUNK_SIZE){
+    const end = Math.min(start + BOOK_CHUNK_SIZE - 1, MAX_ID);
+    const chunkWords = WORDS.filter(w => w.id >= start && w.id <= end);
+    const count = chunkWords.length;
+    const exCount = chunkWords.filter(w => w.ex).length;
+    const masteredN = chunkWords.filter(w => progress[w.id] && progress[w.id].box >= MASTER_BOX).length;
+    const btn = el('div','toc-item');
+    btn.innerHTML = '<div class="toc-range">No.' + start + '〜' + end + '</div>' +
+      '<div class="toc-sub">' + count + '語' + (exCount ? '・例文' + exCount + '語' : '') + '</div>' +
+      (masteredN ? '<div class="toc-sub" style="color:var(--shu);margin-top:2px;">済 ' + masteredN + '語</div>' : '');
+    btn.onclick = () => { bookChunkStart = start; bookChunkEnd = end; bookPageIndex = 0; route = 'bookpage'; render(); };
+    grid.appendChild(btn);
+  }
+  frag.appendChild(grid);
+  return frag;
+}
+
+function renderBookPage(){
+  const frag = document.createDocumentFragment();
+  const chunkWords = WORDS.filter(w => w.id >= bookChunkStart && w.id <= bookChunkEnd);
+  const totalPages = Math.max(1, Math.ceil(chunkWords.length / BOOK_PAGE_SIZE));
+  if (bookPageIndex >= totalPages) bookPageIndex = totalPages - 1;
+  if (bookPageIndex < 0) bookPageIndex = 0;
+  const pageWords = chunkWords.slice(bookPageIndex * BOOK_PAGE_SIZE, bookPageIndex * BOOK_PAGE_SIZE + BOOK_PAGE_SIZE);
+
+  const crumb = el('div','book-crumb');
+  const back = document.createElement('a');
+  back.href = 'javascript:void(0)'; back.textContent = '← 目次へ';
+  back.onclick = () => { route = 'booktoc'; render(); };
+  crumb.appendChild(back);
+  crumb.appendChild(el('span','','No.' + bookChunkStart + '〜' + bookChunkEnd + '　' + (bookPageIndex+1) + ' / ' + totalPages + 'ページ'));
+  frag.appendChild(crumb);
+
+  const list = el('div','book-list');
+  pageWords.forEach(w => {
+    const p = progress[w.id];
+    const mastered = p && p.box >= MASTER_BOX;
+    const card = el('div','book-entry' + (mastered ? ' book-entry-done' : ''));
+    const head = el('div','book-head');
+    head.appendChild(el('span','book-id','No.' + w.id));
+    head.appendChild(el('span','book-word', w.word));
+    card.appendChild(head);
+    card.appendChild(el('div','book-meaning', w.meaning));
+    if (p && (p.correct || p.wrong)) card.appendChild(el('div','book-acc', accuracyText(p)));
+    if (w.ex){
+      const exBox = el('div','book-example');
+      exBox.appendChild(el('div','book-ex-en', w.ex));
+      exBox.appendChild(el('div','book-ex-ja', w.exJa));
+      card.appendChild(exBox);
+    } else {
+      card.appendChild(el('div','book-ex-pending','例文は準備中です'));
+    }
+    if (mastered){
+      card.appendChild(el('div','book-stamp','済'));
+    }
+    list.appendChild(card);
+  });
+  frag.appendChild(list);
+
+  const nav = el('div','book-nav');
+  const prevBtn = el('button','btn btn-outline','← 前のページ');
+  prevBtn.disabled = bookPageIndex === 0;
+  prevBtn.onclick = () => { bookPageIndex -= 1; render(); window.scrollTo(0,0); };
+  const nextBtn = el('button','btn btn-primary','次のページ →');
+  nextBtn.disabled = bookPageIndex >= totalPages - 1;
+  nextBtn.onclick = () => { bookPageIndex += 1; render(); window.scrollTo(0,0); };
+  nav.appendChild(prevBtn); nav.appendChild(nextBtn);
+  frag.appendChild(nav);
+
+  return frag;
+}
+
+
+function openSettings(){
+  const bg = el('div','modal-bg');
+  const m = el('div','modal');
+  m.appendChild(el('h3','','設定'));
+
+  const row1 = el('div','settings-row');
+  row1.appendChild(el('span','','1日の新規単語数'));
+  const sel1 = document.createElement('select');
+  [5,10,15,20,30,50].forEach(n => {
+    const o = document.createElement('option'); o.value = n; o.textContent = n + '語';
+    if (n === settings.dailyNew) o.selected = true;
+    sel1.appendChild(o);
+  });
+  row1.appendChild(sel1);
+  m.appendChild(row1);
+
+  const row2 = el('div','settings-row');
+  row2.appendChild(el('span','','1回のセッション語数'));
+  const sel2 = document.createElement('select');
+  [10,20,30,50].forEach(n => {
+    const o = document.createElement('option'); o.value = n; o.textContent = n + '語';
+    if (n === settings.sessionSize) o.selected = true;
+    sel2.appendChild(o);
+  });
+  row2.appendChild(sel2);
+  m.appendChild(row2);
+
+  m.appendChild(el('p','','新規単語数を絞ることで、復習が後回しにならず長期記憶への定着率が上がります（分散学習の原則）。'));
+
+  const resetBtn = el('button','btn-ghost','学習データをすべてリセット');
+  resetBtn.style.fontSize = '12px';
+  resetBtn.style.marginBottom = '14px';
+  resetBtn.style.display = 'block';
+  resetBtn.onclick = () => { bg.remove(); confirmReset(); };
+  m.appendChild(resetBtn);
+
+  const row = el('div','row');
+  const cancel = el('button','btn btn-ghost','閉じる');
+  cancel.onclick = () => bg.remove();
+  const save = el('button','btn btn-primary','保存');
+  save.onclick = async () => {
+    settings.dailyNew = Number(sel1.value);
+    settings.sessionSize = Number(sel2.value);
+    await saveSettings();
+    bg.remove();
+    render();
+  };
+  row.appendChild(cancel); row.appendChild(save);
+  m.appendChild(row);
+
+  bg.appendChild(m);
+  bg.onclick = (e) => { if (e.target === bg) bg.remove(); };
+  document.body.appendChild(bg);
+}
+
+function confirmReset(){
+  const bg = el('div','modal-bg');
+  const m = el('div','modal');
+  m.appendChild(el('h3','','本当にリセットしますか？'));
+  m.appendChild(el('p','','これまでの学習履歴・進捗がすべて削除されます。この操作は取り消せません。'));
+  const row = el('div','row');
+  const cancel = el('button','btn btn-ghost','キャンセル');
+  cancel.onclick = () => bg.remove();
+  const ok = el('button','btn btn-shu','リセットする');
+  ok.onclick = async () => {
+    progress = {}; stats = { history: {}, streak: 0, lastDate: null, newToday: { date: null, count: 0 }, totalReviews: 0 };
+    _unseenCache = null;
+    await saveProgress(); await saveStats();
+    bg.remove(); route = 'home'; render();
+  };
+  row.appendChild(cancel); row.appendChild(ok);
+  m.appendChild(row);
+  bg.appendChild(m);
+  bg.onclick = (e) => { if (e.target === bg) bg.remove(); };
+  document.body.appendChild(bg);
+}
+
+/* ============ KEYBOARD SHORTCUTS ============ */
+document.addEventListener('keydown', (e) => {
+  if (route !== 'session' || !session) return;
+  const w = currentSessionWord();
+  if (!w) return;
+  if (session.mode === 'flip'){
+    if (!session.revealed && (e.key === ' ' || e.key === 'Enter')){ e.preventDefault(); session.revealed = true; render(); return; }
+    if (session.revealed){
+      if (e.key === '1') answer(w.id,'again');
+      else if (e.key === '2') answer(w.id,'good');
+      else if (e.key === '3') answer(w.id,'easy');
+    }
+  }
+});
+
+/* ============ INIT ============ */
+(async function init(){
+  document.getElementById('app').innerHTML = '<div class="empty-note">読み込み中…</div>';
+  await loadAll();
+  render();
+})();
+</script>
+</body>
+</html>
